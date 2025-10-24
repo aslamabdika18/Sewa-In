@@ -15,7 +15,6 @@
         
         <div class="space-y-1">
           <h1 class="text-xl font-black text-gray-900">Selamat Datang! 👋</h1>
-          <p class="text-sm text-gray-600">Masuk untuk melanjutkan</p>
         </div>
       </div>
 
