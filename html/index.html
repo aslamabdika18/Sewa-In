@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sewa-In | Petualangan Dimulai Dari Sini</title>
+    <meta name="description" content="Wujudkan petualangan impian tanpa batas. Sewa peralatan outdoor premium untuk setiap perjalanan Anda.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        adventure: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            900: '#064e3b'
+                        },
+                        sunset: {
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'scale-in': 'scaleIn 0.4s ease-out',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        scaleIn: {
+                            '0%': { transform: 'scale(0.9)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .hero-background {
+            background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #059669 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(16, 185, 129, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.2) 0%, transparent 50%);
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-premium {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .card-premium:hover::before {
+            left: 100%;
+        }
+        
+        .card-premium:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+        
+        .scroll-indicator {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .category-badge {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .category-badge:hover {
+            transform: scale(1.05);
+        }
+        
+        .category-badge.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+        
+        .nav-blur {
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        @media (max-width: 768px) {
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-adventure-500 to-adventure-700 rounded-lg flex items-center justify-center">
+                        <i data-feather="compass" class="text-white w-6 h-6"></i>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-adventure-600 to-adventure-800 bg-clip-text text-transparent">Sewa-In</span>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#adventure" class="text-gray-700 hover:text-adventure-600 font-medium transition">Beranda</a>
+                    <a href="#equipment" class="text-gray-700 hover:text-adventure-600 font-medium transition">Peralatan</a>
+                    <a href="#community" class="text-gray-700 hover:text-adventure-600 font-medium transition">Panduan</a>
+                    <a href="#story" class="text-gray-700 hover:text-adventure-600 font-medium transition">Tentang kami</a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#" class="px-5 py-2.5 text-adventure-600 font-semibold rounded-xl border-2 border-adventure-600 hover:bg-adventure-600 hover:text-white transition-all duration-300">Masuk</a>
+                </div>
+                
+                <button class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition">
+                    <i data-feather="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-background pt-32 pb-20 md:pt-40 md:pb-32 relative">
+        <div class="container mx-auto px-4 sm:px-6 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <div class="lg:w-1/2 text-white">
+                    <div class="inline-block mb-6 px-4 py-2 glass-effect rounded-full text-sm font-semibold animate-fade-in">
+                        🏕️ Dipercaya 25,000+ Petualang
+                    </div>
+                    
+                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight animate-slide-up">
+                        Petualangan Tanpa Batas,<br/>
+                        <span class="text-sunset-500">Tanpa Harus Memiliki</span>
+                    </h1>
+                    
+                    <p class="text-xl md:text-2xl mb-10 text-gray-100 leading-relaxed animate-slide-up" style="animation-delay: 0.1s">
+                        Dari puncak gunung hingga tepi pantai. Sewa peralatan outdoor premium dan wujudkan setiap mimpi petualangan Anda.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 mb-12 animate-slide-up" style="animation-delay: 0.2s">
+                        <a href="#equipment" class="group px-8 py-4 bg-white text-adventure-700 font-bold rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 text-center flex items-center justify-center">
+                            Jelajahi Peralatan
+                            <i data-feather="arrow-right" class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <a href="#how" class="px-8 py-4 glass-effect text-white font-bold rounded-xl hover:bg-white hover:text-adventure-700 transition-all duration-300 text-center flex items-center justify-center">
+                            <i data-feather="play-circle" class="mr-2 w-5 h-5"></i>
+                            Cara Kerja
+                        </a>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-8 animate-fade-in" style="animation-delay: 0.3s">
+                        <div class="flex items-center gap-2">
+                            <div class="w-12 h-12 glass-effect rounded-full flex items-center justify-center">
+                                <i data-feather="shield-check" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-lg">100% Aman</div>
+                                <div class="text-sm text-gray-200">Terverifikasi & Terasuransi</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-2">
+                            <div class="w-12 h-12 glass-effect rounded-full flex items-center justify-center">
+                                <i data-feather="clock" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-lg">24 Jam</div>
+                                <div class="text-sm text-gray-200">Siap Dikirim</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:w-1/2 relative animate-float">
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl">
+                        <img src="http://static.photos/nature/1024x768/1" alt="Adventure Equipment" class="w-full h-auto">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    </div>
+                    
+                    <!-- Floating Cards -->
+                    <div class="absolute -left-6 top-20 glass-effect text-white p-4 rounded-xl shadow-xl animate-float" style="animation-delay: 0.5s">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-sunset-500 rounded-lg flex items-center justify-center">
+                                <i data-feather="tent" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold">Tenda Premium</div>
+                                <div class="text-sm text-gray-200">Rp 75K/hari</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute -right-6 bottom-20 glass-effect text-white p-4 rounded-xl shadow-xl animate-float" style="animation-delay: 1s">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-adventure-500 rounded-lg flex items-center justify-center">
+                                <i data-feather="package" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold">Carrier 60L</div>
+                                <div class="text-sm text-gray-200">Rp 50K/hari</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 scroll-indicator">
+            <div class="w-6 h-10 border-2 border-white rounded-full flex justify-center pt-2">
+                <div class="w-1 h-3 bg-white rounded-full animate-bounce"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-gradient-to-b from-gray-50 to-white">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="text-center reveal">
+                    <div class="stat-number gradient-text mb-2">25K+</div>
+                    <div class="text-gray-600 font-medium">Petualang Aktif</div>
+                </div>
+                <div class="text-center reveal" style="transition-delay: 0.1s">
+                    <div class="stat-number gradient-text mb-2">500+</div>
+                    <div class="text-gray-600 font-medium">Peralatan Premium</div>
+                </div>
+                <div class="text-center reveal" style="transition-delay: 0.2s">
+                    <div class="stat-number gradient-text mb-2">150+</div>
+                    <div class="text-gray-600 font-medium">Destinasi</div>
+                </div>
+                <div class="text-center reveal" style="transition-delay: 0.3s">
+                    <div class="stat-number gradient-text mb-2">4.9</div>
+                    <div class="text-gray-600 font-medium">Rating Pengguna</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Proposition -->
+    <section id="adventure" class="py-24 bg-white">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16 reveal">
+                <div class="inline-block mb-4 px-4 py-2 bg-adventure-100 text-adventure-700 rounded-full text-sm font-bold">
+                    KENAPA SEWA-IN?
+                </div>
+                <h2 class="text-4xl md:text-5xl font-black mb-6">
+                    Lebih Dari Sekedar <span class="gradient-text">Sewa Peralatan</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Kami memahami bahwa setiap petualangan adalah cerita yang berharga. Itulah mengapa kami hadir dengan solusi yang membebaskan Anda dari beban kepemilikan.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="reveal card-premium bg-white rounded-2xl p-8 shadow-lg">
+                    <div class="w-16 h-16 bg-gradient-to-br from-adventure-500 to-adventure-700 rounded-2xl flex items-center justify-center mb-6 transform -rotate-3">
+                        <i data-feather="heart" class="text-white w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Kualitas Terjamin</h3>
+                    <p class="text-gray-600 leading-relaxed mb-4">
+                        Setiap peralatan dipilih dengan cermat, dirawat dengan standar profesional, dan diinspeksi sebelum setiap penyewaan.
+                    </p>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <i data-feather="check" class="w-5 h-5 text-adventure-600 mr-2"></i>
+                            <span>Brand ternama internasional</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="w-5 h-5 text-adventure-600 mr-2"></i>
+                            <span>Terawat optimal</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="w-5 h-5 text-adventure-600 mr-2"></i>
+                            <span>Inspeksi rutin</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="reveal card-premium bg-white rounded-2xl p-8 shadow-lg" style="transition-delay: 0.1s">
+                    <div class="w-16 h-16 bg-gradient-to-br from-sunset-500 to-sunset-600 rounded-2xl flex items-center justify-center mb-6 transform rotate-3">
+                        <i data-feather="zap" class="text-white w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Fleksibilitas Total</h3>
+                    <p class="text-gray-600 leading-relaxed mb-4">
+                        Sewa sesuai kebutuhan Anda. Harian, mingguan, atau bulanan. Perpanjang dengan mudah jika petualangan berlanjut.
+                    </p>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <i data-feather="check" class="w-5 h-5 text-adventure-600 mr-2"></i>
+                            <span>Booking instan</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="w-5 h-5 text-adventure-600 mr-2"></i>
+                            <span>Perpanjang kapan saja</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="w-5 h-5 text-adventure-600 mr-2"></i>
+                            <span>Cancel gratis H-2</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="reveal card-premium bg-white rounded-2xl p-8 shadow-lg" style="transition-delay: 0.2s">
+                    <div class="w-16 h-16 bg-gradient-to-br from-adventure-500 to-adventure-700 rounded-2xl flex items-center justify-center mb-6 transform -rotate-3">
+                        <i data-feather="users" class="text-white w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Komunitas Petualang</h3>
+                    <p class="text-gray-600 leading-relaxed mb-4">
+                        Bergabung dengan ribuan petualang. Bagikan pengalaman, dapatkan tips, dan temukan teman seperjalanan.
+                    </p>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <i data-feather="check" class="w-5 h-5 text-adventure-600 mr-2"></i>
+                            <span>Forum diskusi aktif</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="w-5 h-5 text-adventure-600 mr-2"></i>
+                            <span>Event komunitas</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="w-5 h-5 text-adventure-600 mr-2"></i>
+                            <span>Panduan eksklusif</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Equipment Showcase -->
+    <section id="equipment" class="py-24 bg-gradient-to-b from-gray-50 to-white">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-4xl md:text-5xl font-black mb-6">
+                    Peralatan <span class="gradient-text">Premium</span> Kami
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Koleksi lengkap untuk setiap jenis petualangan
+                </p>
+            </div>
+            
+            <!-- Category Filter -->
+            <div class="flex flex-wrap justify-center gap-3 mb-12 reveal">
+                <button class="category-badge active px-6 py-3 rounded-full font-semibold text-sm">
+                    Semua Peralatan
+                </button>
+                <button class="category-badge px-6 py-3 bg-gray-100 rounded-full font-semibold text-sm text-gray-700">
+                    🏕️ Camping
+                </button>
+                <button class="category-badge px-6 py-3 bg-gray-100 rounded-full font-semibold text-sm text-gray-700">
+                    🥾 Hiking
+                </button>
+                <button class="category-badge px-6 py-3 bg-gray-100 rounded-full font-semibold text-sm text-gray-700">
+                    🎒 Carrier
+                </button>
+                <button class="category-badge px-6 py-3 bg-gray-100 rounded-full font-semibold text-sm text-gray-700">
+                    🔦 Perlengkapan
+                </button>
+            </div>
+            
+            <!-- Equipment Grid -->
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="reveal card-premium bg-white rounded-2xl overflow-hidden shadow-lg group">
+                    <div class="relative overflow-hidden">
+                        <img src="http://static.photos/nature/640x480/2" alt="Tenda Premium" class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-4 right-4 bg-adventure-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+                            Populer
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xs font-bold text-adventure-600 bg-adventure-100 px-2 py-1 rounded">CAMPING</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Tenda Dome 4 Orang</h3>
+                        <p class="text-gray-600 text-sm mb-4">Waterproof, UV protection, mudah setup</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-2xl font-black text-adventure-600">Rp 75K</div>
+                                <div class="text-sm text-gray-500">/hari</div>
+                            </div>
+                            <button class="w-12 h-12 bg-adventure-600 text-white rounded-xl hover:bg-adventure-700 hover:scale-110 transition-all duration-300 flex items-center justify-center">
+                                <i data-feather="arrow-right" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reveal card-premium bg-white rounded-2xl overflow-hidden shadow-lg group" style="transition-delay: 0.1s">
+                    <div class="relative overflow-hidden">
+                        <img src="http://static.photos/nature/640x480/3" alt="Carrier" class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-4 right-4 bg-sunset-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+                            New
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xs font-bold text-adventure-600 bg-adventure-100 px-2 py-1 rounded">CARRIER</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Carrier 60L + Raincover</h3>
+                        <p class="text-gray-600 text-sm mb-4">Ergonomis, ventilasi punggung, banyak kompartemen</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-2xl font-black text-adventure-600">Rp 50K</div>
+                                <div class="text-sm text-gray-500">/hari</div>
+                            </div>
+                            <button class="w-12 h-12 bg-adventure-600 text-white rounded-xl hover:bg-adventure-700 hover:scale-110 transition-all duration-300 flex items-center justify-center">
+                                <i data-feather="arrow-right" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reveal card-premium bg-white rounded-2xl overflow-hidden shadow-lg group" style="transition-delay: 0.2s">
+                    <div class="relative overflow-hidden">
+                        <img src="http://static.photos/nature/640x480/4" alt="Sleeping Bag" class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xs font-bold text-adventure-600 bg-adventure-100 px-2 py-1 rounded">CAMPING</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Sleeping Bag -5°C</h3>
+                        <p class="text-gray-600 text-sm mb-4">Hangat, compact, mummy design</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-2xl font-black text-adventure-600">Rp 40K</div>
+                                <div class="text-sm text-gray-500">/hari</div>
+                            </div>
+                            <button class="w-12 h-12 bg-adventure-600 text-white rounded-xl hover:bg-adventure-700 hover:scale-110 transition-all duration-300 flex items-center justify-center">
+                                <i data-feather="arrow-right" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reveal card-premium bg-white rounded-2xl overflow-hidden shadow-lg group" style="transition-delay: 0.3s">
+                    <div class="relative overflow-hidden">
+                        <img src="http://static.photos/nature/640x480/5" alt="Kompor Portable" class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xs font-bold text-adventure-600 bg-adventure-100 px-2 py-1 rounded">COOKING</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Kompor Portable + Gas</h3>
+                        <p class="text-gray-600 text-sm mb-4">Efisien, windproof, safety lock</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-2xl font-black text-adventure-600">Rp 25K</div>
+                                <div class="text-sm text-gray-500">/hari</div>
+                            </div>
+                            <button class="w-12 h-12 bg-adventure-600 text-white rounded-xl hover:bg-adventure-700 hover:scale-110 transition-all duration-300 flex items-center justify-center">
+                                <i data-feather="arrow-right" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12 reveal">
+                <a href="#" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-adventure-600 to-adventure-700 text-white font-bold rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300">
+                    Lihat Semua Peralatan
+                    <i data-feather="arrow-right" class="ml-2 w-5 h-5"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how" class="py-24 bg-white">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-black mb-6">
+                    Mudah, <span class="gradient-text">Cepat, Aman</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Hanya 3 langkah untuk memulai petualangan Anda
+                </p>
+            </div>
+            
+            <div class="relative">
+                <!-- Connection Line -->
+                <div class="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-adventure-500 via-adventure-600 to-adventure-700 transform -translate-y-1/2 z-0"></div>
+                
+                <div class="grid md:grid-cols-3 gap-8 relative z-10">
+                    <div class="reveal text-center">
+                        <div class="w-24 h-24 bg-gradient-to-br from-adventure-500 to-adventure-700 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl transform hover:scale-110 transition-transform duration-300">
+                            <i data-feather="search" class="text-white w-12 h-12"></i>
+                        </div>
+                        <div class="bg-white rounded-2xl p-8 shadow-lg">
+                            <div class="text-6xl font-black text-gray-100 mb-2">01</div>
+                            <h3 class="text-2xl font-bold mb-4">Pilih Peralatan</h3>
+                            <p class="text-gray-600 leading-relaxed">
+                                Browse koleksi lengkap kami dan pilih peralatan yang sesuai dengan kebutuhan petualangan Anda.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="reveal text-center" style="transition-delay: 0.1s">
+                        <div class="w-24 h-24 bg-gradient-to-br from-sunset-500 to-sunset-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl transform hover:scale-110 transition-transform duration-300">
+                            <i data-feather="calendar" class="text-white w-12 h-12"></i>
+                        </div>
+                        <div class="bg-white rounded-2xl p-8 shadow-lg">
+                            <div class="text-6xl font-black text-gray-100 mb-2">02</div>
+                            <h3 class="text-2xl font-bold mb-4">Booking Instan</h3>
+                            <p class="text-gray-600 leading-relaxed">
+                                Pilih tanggal, lakukan pembayaran aman, dan konfirmasi booking Anda dalam hitungan menit.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="reveal text-center" style="transition-delay: 0.2s">
+                        <div class="w-24 h-24 bg-gradient-to-br from-adventure-500 to-adventure-700 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl transform hover:scale-110 transition-transform duration-300">
+                            <i data-feather="truck" class="text-white w-12 h-12"></i>
+                        </div>
+                        <div class="bg-white rounded-2xl p-8 shadow-lg">
+                            <div class="text-6xl font-black text-gray-100 mb-2">03</div>
+                            <h3 class="text-2xl font-bold mb-4">Siap Berangkat</h3>
+                            <p class="text-gray-600 leading-relaxed">
+                                Peralatan dikirim atau bisa diambil. Lengkap dengan panduan penggunaan dan dukungan 24/7.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Stories -->
+    <section id="story" class="py-24 bg-gradient-to-b from-gray-50 to-white">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16 reveal">
+                <div class="inline-block mb-4 px-4 py-2 bg-adventure-100 text-adventure-700 rounded-full text-sm font-bold">
+                    CERITA PETUALANG
+                </div>
+                <h2 class="text-4xl md:text-5xl font-black mb-6">
+                    Suara <span class="gradient-text">Komunitas</span> Kami
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Ribuan petualang telah mempercayai Sewa-In untuk mewujudkan impian mereka
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="reveal card-premium bg-white rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <img src="http://static.photos/people/100x100/1" alt="Adventurer" class="w-16 h-16 rounded-full border-4 border-adventure-100">
+                        <div class="ml-4">
+                            <div class="font-bold text-lg">Rizki Pratama</div>
+                            <div class="text-gray-600 text-sm">Summit Rinjani • 3 trips</div>
+                        </div>
+                    </div>
+                    <div class="flex mb-4">
+                        <i data-feather="star" class="text-yellow-400 w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="text-yellow-400 w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="text-yellow-400 w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="text-yellow-400 w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="text-yellow-400 w-5 h-5 fill-current"></i>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">
+                        "Gear yang disewa kualitasnya top banget! Carrier-nya ergonomis dan sleeping bag-nya bikin tidur nyenyak di ketinggian 3000 mdpl. Sewa-In bikin naik gunung jadi lebih gampang tanpa harus keluar budget besar buat beli gear."
+                    </p>
+                </div>
+                
+                <div class="reveal card-premium bg-white rounded-2xl p-8 shadow-lg" style="transition-delay: 0.1s">
+                    <div class="flex items-center mb-6">
+                        <img src="http://static.photos/people/100x100/2" alt="Adventurer" class="w-16 h-16 rounded-full border-4 border-adventure-100">
+                        <div class="ml-4">
+                            <div class="font-bold text-lg">Sarah Andini</div>
+                            <div class="text-gray-600 text-sm">Beach Camping • 5 trips</div>
+                        </div>
+                    </div>
+                    <div class="flex mb-4">
+                        <i data-feather="star" class="text-yellow-400 w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="text-yellow-400 w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="text-yellow-400 w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="text-yellow-400 w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="text-yellow-400 w-5 h-5 fill-current"></i>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">
+                        "Awalnya ragu sewa peralatan camping online, tapi ternyata prosesnya super mudah! Barang diantar tepat waktu, kondisi prima, dan customer servicenya responsif banget. Sekarang setiap weekend trip pasti pakai Sewa-In!"
+                    </p>
+                </div>
+                
+                <div class="reveal card-premium bg-white rounded-2xl p-8 shadow-lg" style="transition-delay: 0.2s">
+                    <div class="flex items-center mb-6">
+                        <img src="http://static.photos/people/100x100/3" alt="Adventurer" class="w-16 h-16 rounded-full border-4 border-adventure-100">
+                        <div class="ml-4">
+                            <div class="font-bold text-lg">Andi Wijaya</div>
+                            <div class="text-gray-600 text-sm">Jungle Trekking • 7 trips</div>
+                        </div>
+                    </div>
+                    <div class="flex mb-4">
+                        <i data-feather="star" class="text-yellow-400 w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="text-yellow-400 w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="text-yellow-400 w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="text-yellow-400 w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="text-yellow-400 w-5 h-5 fill-current"></i>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">
+                        "Game changer buat yang suka adventure tapi belum punya budget lengkap. Sewa-In kasih akses ke gear berkualitas dengan harga terjangkau. Plus dapet tips dan panduan dari komunitasnya, jadi makin semangat eksplor Indonesia!"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 bg-gradient-to-br from-adventure-600 via-adventure-700 to-adventure-900 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-sunset-500 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 sm:px-6 relative z-10">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <div class="inline-block mb-6 px-6 py-3 glass-effect rounded-full text-sm font-bold animate-fade-in">
+                    🎉 Promo Spesial: Diskon 30% untuk Member Baru
+                </div>
+                
+                <h2 class="text-4xl md:text-6xl font-black mb-6 leading-tight animate-slide-up">
+                    Petualangan Menanti.<br/>
+                    Kapan Anda Mulai?
+                </h2>
+                
+                <p class="text-xl md:text-2xl mb-12 text-gray-100 leading-relaxed animate-slide-up" style="animation-delay: 0.1s">
+                    Jangan biarkan keterbatasan menahan impian. Mulai petualangan pertama Anda hari ini dengan peralatan terbaik dari Sewa-In.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row justify-center gap-4 animate-slide-up" style="animation-delay: 0.2s">
+                    <a href="#" class="group px-10 py-5 bg-white text-adventure-700 font-bold rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 text-center flex items-center justify-center">
+                        Mulai Sekarang
+                        <i data-feather="arrow-right" class="ml-2 w-6 h-6 group-hover:translate-x-2 transition-transform"></i>
+                    </a>
+                    <a href="#" class="px-10 py-5 glass-effect text-white font-bold rounded-xl hover:bg-white hover:text-adventure-700 transition-all duration-300 text-center flex items-center justify-center">
+                        <i data-feather="phone" class="mr-2 w-6 h-6"></i>
+                        Hubungi Kami
+                    </a>
+                </div>
+                
+                <div class="mt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
+                    <div class="text-center">
+                        <div class="text-4xl font-black mb-2">24/7</div>
+                        <div class="text-sm text-gray-200">Customer Support</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-black mb-2">100%</div>
+                        <div class="text-sm text-gray-200">Uang Kembali</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-black mb-2">2 Jam</div>
+                        <div class="text-sm text-gray-200">Proses Booking</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 py-16">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <div class="md:col-span-1">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-adventure-500 to-adventure-700 rounded-lg flex items-center justify-center">
+                            <i data-feather="compass" class="text-white w-7 h-7"></i>
+                        </div>
+                        <span class="text-2xl font-bold text-white">Sewa-In</span>
+                    </div>
+                    <p class="text-gray-400 mb-6 leading-relaxed">
+                        Mewujudkan petualangan impian dengan peralatan outdoor premium dan terpercaya.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-adventure-600 transition-colors">
+                            <i data-feather="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-adventure-600 transition-colors">
+                            <i data-feather="facebook" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-adventure-600 transition-colors">
+                            <i data-feather="twitter" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-adventure-600 transition-colors">
+                            <i data-feather="youtube" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-6">Peralatan</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="hover:text-adventure-500 transition-colors">Tenda & Shelter</a></li>
+                        <li><a href="#" class="hover:text-adventure-500 transition-colors">Carrier & Tas</a></li>
+                        <li><a href="#" class="hover:text-adventure-500 transition-colors">Sleeping Gear</a></li>
+                        <li><a href="#" class="hover:text-adventure-500 transition-colors">Cooking Set</a></li>
+                        <li><a href="#" class="hover:text-adventure-500 transition-colors">Paket Lengkap</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-6">Perusahaan</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="hover:text-adventure-500 transition-colors">Tentang Kami</a></li>
+                        <li><a href="#" class="hover:text-adventure-500 transition-colors">Komunitas</a></li>
+                        <li><a href="#" class="hover:text-adventure-500 transition-colors">Blog & Artikel</a></li>
+                        <li><a href="#" class="hover:text-adventure-500 transition-colors">Karir</a></li>
+                        <li><a href="#" class="hover:text-adventure-500 transition-colors">Press Kit</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-6">Dukungan</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="hover:text-adventure-500 transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-adventure-500 transition-colors">FAQ</a></li>
+                        <li><a href="#" class="hover:text-adventure-500 transition-colors">Syarat & Ketentuan</a></li>
+                        <li><a href="#" class="hover:text-adventure-500 transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-adventure-500 transition-colors">Hubungi Kami</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p class="text-gray-500 text-sm">
+                        © 2024 Sewa-In. Petualangan Tanpa Batas. All rights reserved.
+                    </p>
+                    <div class="flex items-center gap-6">
+                        <img src="http://static.photos/black/200x200/6" alt="Payment" class="h-8 opacity-50 hover:opacity-100 transition">
+                        <img src="http://static.photos/black/200x200/7" alt="Payment" class="h-8 opacity-50 hover:opacity-100 transition">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/" class="fixed bottom-6 right-6 w-16 h-16 bg-green-500 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all duration-300 z-50 group">
+        <i data-feather="message-circle" class="text-white w-8 h-8"></i>
+        <span class="absolute right-full mr-4 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+            Chat dengan kami
+        </span>
+    </a>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+        
+        // Navbar scroll effect
+        let lastScroll = 0;
+        const navbar = document.getElementById('navbar');
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                navbar.classList.add('nav-blur', 'shadow-lg');
+            } else {
+                navbar.classList.remove('nav-blur', 'shadow-lg');
+            }
+            
+            lastScroll = currentScroll;
+        });
+        
+        // Reveal animation on scroll
+        const reveals = document.querySelectorAll('.reveal');
+        
+        const revealOnScroll = () => {
+            reveals.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Initial check
+        
+        // Category filter functionality
+        const categoryBadges = document.querySelectorAll('.category-badge');
+        
+        categoryBadges.forEach(badge => {
+            badge.addEventListener('click', () => {
+                categoryBadges.forEach(b => {
+                    b.classList.remove('active');
+                    b.classList.add('bg-gray-100', 'text-gray-700');
+                    b.classList.remove('text-white');
+                });
+                
+                badge.classList.add('active');
+                badge.classList.remove('bg-gray-100', 'text-gray-700');
+                badge.classList.add('text-white');
+            });
+        });
+        
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Re-initialize feather icons after any dynamic content changes
+        setTimeout(() => {
+            feather.replace();
+        }, 100);
+    </script>
+</body>
+</html>

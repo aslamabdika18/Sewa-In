@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | RentalEase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .progress-step.active .step-number {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .progress-step.active .step-label {
+            color: #3b82f6;
+        }
+        .progress-step.completed .step-number {
+            background-color: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+        .progress-step.completed .step-number span {
+            display: none;
+        }
+        .progress-step.completed .step-number::after {
+            content: "✓";
+        }
+        .sticky-summary {
+            position: sticky;
+            top: 20px;
+        }
+        .step-content {
+            display: none;
+        }
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .date-picker {
+            display: none;
+            position: absolute;
+            z-index: 100;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            margin-top: 0.5rem;
+        }
+        .date-picker.active {
+            display: block;
+        }
+        .date-cell {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .date-cell:hover {
+            background-color: #dbeafe;
+        }
+        .date-cell.selected {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .date-cell.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        @media (max-width: 1023px) {
+            .mobile-sticky-summary {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 50;
+                box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+                background: white;
+                padding: 1rem;
+            }
+            .progress-step .step-label {
+                display: none;
+            }
+            .progress-step {
+                font-size: 0.75rem;
+            }
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            min-width: 300px;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Secure Header -->
+    <header class="bg-white border-b border-gray-200 py-4 px-4 md:px-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i data-feather="lock" class="text-green-500 w-5 h-5"></i>
+                <span class="text-sm font-medium text-gray-700">Secure Checkout</span>
+            </div>
+            <div class="flex items-center space-x-2 md:space-x-4">
+                <a href="#" class="text-sm font-medium text-gray-600 hover:text-blue-600 flex items-center">
+                    <i data-feather="help-circle" class="w-4 h-4 mr-1"></i>
+                    <span class="hidden sm:inline">Help</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-1">
+                    <i data-feather="phone" class="w-4 h-4 text-gray-500"></i>
+                    <span class="text-sm text-gray-600">24/7: +62 812 3456 7890</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-4 md:py-8 mb-32 lg:mb-8">
+        <!-- Progress Steps -->
+        <div class="mb-8 md:mb-12">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-xl md:text-2xl font-bold text-gray-900">Complete Your Rental</h1>
+                <span class="text-sm text-gray-500">Step <span id="currentStepNum">1</span> of 4</span>
+            </div>
+            <div class="flex items-center justify-between" id="progressSteps">
+                <div class="progress-step active" data-step="1">
+                    <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-gray-300 font-medium text-sm md:text-base">
+                        <span>1</span>
+                    </div>
+                    <span class="step-label text-xs md:text-sm font-medium mt-1">Rental Details</span>
+                </div>
+                <div class="flex-1 h-px bg-gray-300 mx-1 md:mx-2"></div>
+                <div class="progress-step" data-step="2">
+                    <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-gray-300 font-medium text-sm md:text-base">
+                        <span>2</span>
+                    </div>
+                    <span class="step-label text-xs md:text-sm font-medium mt-1">Your Info</span>
+                </div>
+                <div class="flex-1 h-px bg-gray-300 mx-1 md:mx-2"></div>
+                <div class="progress-step" data-step="3">
+                    <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-gray-300 font-medium text-sm md:text-base">
+                        <span>3</span>
+                    </div>
+                    <span class="step-label text-xs md:text-sm font-medium mt-1">Payment</span>
+                </div>
+                <div class="flex-1 h-px bg-gray-300 mx-1 md:mx-2"></div>
+                <div class="progress-step" data-step="4">
+                    <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-gray-300 font-medium text-sm md:text-base">
+                        <span>4</span>
+                    </div>
+                    <span class="step-label text-xs md:text-sm font-medium mt-1">Confirmation</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6 md:gap-8">
+            <!-- Left Column - Main Form -->
+            <div class="lg:col-span-2">
+                <!-- Step 1: Rental Details -->
+                <div id="step1" class="step-content active">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
+                        <h2 class="text-lg md:text-xl font-semibold mb-6">Rental Details</h2>
+                        
+                        <!-- Item Preview -->
+                        <div class="flex items-start mb-8">
+                            <div class="w-20 h-20 md:w-24 md:h-24 rounded-lg bg-gray-100 overflow-hidden mr-3 md:mr-4 flex-shrink-0">
+                                <div class="w-full h-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                                    <i data-feather="camera" class="w-10 h-10 text-white"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-gray-900">Sony A7 III Mirrorless Camera</h3>
+                                <p class="text-gray-600 text-sm">Owner: Budi Santoso</p>
+                                <div class="flex items-center mt-1">
+                                    <div class="flex text-amber-400">
+                                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                        <i data-feather="star" class="w-4 h-4 fill-current text-gray-300"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-500 ml-1">4.8 (127)</span>
+                                </div>
+                                <p class="text-blue-600 font-medium mt-2" id="dailyPrice">Rp 150,000 / day</p>
+                            </div>
+                        </div>
+
+                        <!-- Date Range Picker -->
+                        <div class="mb-6">
+                            <h3 class="font-medium text-gray-700 mb-3">Rental Period</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                                    <div class="relative">
+                                        <input type="text" id="startDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Select date" readonly>
+                                        <i data-feather="calendar" class="absolute right-3 top-2.5 text-gray-400 pointer-events-none"></i>
+                                    </div>
+                                    <div id="startDatePicker" class="date-picker"></div>
+                                </div>
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                                    <div class="relative">
+                                        <input type="text" id="endDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Select date" readonly>
+                                        <i data-feather="calendar" class="absolute right-3 top-2.5 text-gray-400 pointer-events-none"></i>
+                                    </div>
+                                    <div id="endDatePicker" class="date-picker"></div>
+                                </div>
+                            </div>
+                            <div class="mt-3 flex items-center text-sm text-gray-500">
+                                <i data-feather="clock" class="w-4 h-4 mr-1"></i>
+                                <span id="durationText">Select dates to see duration</span>
+                            </div>
+                        </div>
+
+                        <!-- Delivery Method -->
+                        <div class="mb-6">
+                            <h3 class="font-medium text-gray-700 mb-3">Delivery Method</h3>
+                            <div class="space-y-3">
+                                <label class="flex items-start p-4 border-2 border-blue-400 bg-blue-50 rounded-lg cursor-pointer">
+                                    <input type="radio" name="delivery" value="pickup" class="mt-1" checked>
+                                    <div class="ml-3 flex-1">
+                                        <span class="block font-medium">Pick Up (Free)</span>
+                                        <div class="flex items-center text-sm text-gray-500 mt-1">
+                                            <i data-feather="map-pin" class="w-4 h-4 mr-1"></i>
+                                            <span>Jl. Sudirman No. 123, Jakarta</span>
+                                        </div>
+                                        <div class="flex items-center text-sm text-gray-500 mt-1">
+                                            <i data-feather="clock" class="w-4 h-4 mr-1"></i>
+                                            <span>Mon-Fri: 9:00 AM - 6:00 PM</span>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="flex items-start p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-blue-400">
+                                    <input type="radio" name="delivery" value="delivery" class="mt-1">
+                                    <div class="ml-3 flex-1">
+                                        <div class="flex justify-between">
+                                            <span class="block font-medium">Delivery</span>
+                                            <span class="text-sm font-medium">+Rp 50,000</span>
+                                        </div>
+                                        <div class="mt-2">
+                                            <input type="text" id="deliveryAddress" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg" placeholder="Enter delivery address" disabled>
+                                        </div>
+                                        <div class="flex items-center text-sm text-gray-500 mt-2">
+                                            <i data-feather="clock" class="w-4 h-4 mr-1"></i>
+                                            <span>Estimated time: 1-2 hours</span>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Quantity & Add-ons -->
+                        <div class="mb-6">
+                            <h3 class="font-medium text-gray-700 mb-3">Quantity</h3>
+                            <div class="flex items-center">
+                                <button id="decreaseQty" class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-l-lg bg-gray-50 text-gray-600 hover:bg-gray-100">
+                                    <i data-feather="minus" class="w-4 h-4"></i>
+                                </button>
+                                <div class="w-16 h-10 flex items-center justify-center border-t border-b border-gray-300">
+                                    <span id="quantity" class="font-medium">1</span>
+                                </div>
+                                <button id="increaseQty" class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-r-lg bg-gray-50 text-gray-600 hover:bg-gray-100">
+                                    <i data-feather="plus" class="w-4 h-4"></i>
+                                </button>
+                                <span class="ml-4 text-sm text-gray-500">Available: 2 units</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <h3 class="font-medium text-gray-700 mb-3">Add-ons (Optional)</h3>
+                            <div class="space-y-2">
+                                <label class="flex items-start p-3 border border-gray-200 rounded-lg hover:border-blue-400 cursor-pointer">
+                                    <input type="checkbox" class="addon-checkbox rounded text-blue-600 mt-1" data-price="25000" data-name="Extra Battery">
+                                    <div class="ml-3 flex-1">
+                                        <div class="flex justify-between">
+                                            <span class="font-medium">Extra Battery</span>
+                                            <span class="text-sm font-medium">+Rp 25,000/day</span>
+                                        </div>
+                                        <p class="text-sm text-gray-500 mt-1">Additional battery pack for extended shooting</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-start p-3 border border-gray-200 rounded-lg hover:border-blue-400 cursor-pointer">
+                                    <input type="checkbox" class="addon-checkbox rounded text-blue-600 mt-1" data-price="15000" data-name="SD Card 64GB">
+                                    <div class="ml-3 flex-1">
+                                        <div class="flex justify-between">
+                                            <span class="font-medium">SD Card 64GB</span>
+                                            <span class="text-sm font-medium">+Rp 15,000/day</span>
+                                        </div>
+                                        <p class="text-sm text-gray-500 mt-1">High-speed memory card for 4K recording</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-start p-3 border border-gray-200 rounded-lg hover:border-blue-400 cursor-pointer">
+                                    <input type="checkbox" class="addon-checkbox rounded text-blue-600 mt-1" data-price="20000" data-name="Tripod">
+                                    <div class="ml-3 flex-1">
+                                        <div class="flex justify-between">
+                                            <span class="font-medium">Tripod</span>
+                                            <span class="text-sm font-medium">+Rp 20,000/day</span>
+                                        </div>
+                                        <p class="text-sm text-gray-500 mt-1">Professional tripod for stable shots</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="mb-6">
+                            <h3 class="font-medium text-gray-700 mb-2">Notes for Owner (Optional)</h3>
+                            <textarea id="notes" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-24" placeholder="Any special requests or instructions" maxlength="200"></textarea>
+                            <p class="text-xs text-gray-500 mt-1"><span id="charCount">0</span>/200 characters</p>
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="flex flex-col sm:flex-row justify-between gap-3 pt-6 border-t border-gray-200">
+                            <button class="px-6 py-2 text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-gray-50 flex items-center justify-center">
+                                <i data-feather="arrow-left" class="w-4 h-4 mr-2"></i>
+                                Back to Item
+                            </button>
+                            <button id="nextStep1" class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 flex items-center justify-center">
+                                Continue to Your Info
+                                <i data-feather="arrow-right" class="w-4 h-4 ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Trust Badges -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            <div class="p-2 md:p-3">
+                                <i data-feather="shield" class="w-6 h-6 md:w-8 md:h-8 text-green-500 mx-auto mb-2"></i>
+                                <p class="text-xs md:text-sm font-medium">Secure Payment</p>
+                            </div>
+                            <div class="p-2 md:p-3">
+                                <i data-feather="clock" class="w-6 h-6 md:w-8 md:h-8 text-blue-500 mx-auto mb-2"></i>
+                                <p class="text-xs md:text-sm font-medium">24/7 Support</p>
+                            </div>
+                            <div class="p-2 md:p-3">
+                                <i data-feather="refresh-cw" class="w-6 h-6 md:w-8 md:h-8 text-amber-500 mx-auto mb-2"></i>
+                                <p class="text-xs md:text-sm font-medium">Free Cancellation</p>
+                            </div>
+                            <div class="p-2 md:p-3">
+                                <i data-feather="check-circle" class="w-6 h-6 md:w-8 md:h-8 text-purple-500 mx-auto mb-2"></i>
+                                <p class="text-xs md:text-sm font-medium">Verified Owners</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Your Info -->
+                <div id="step2" class="step-content">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
+                        <h2 class="text-lg md:text-xl font-semibold mb-6">Your Information</h2>
+                        
+                        <div class="space-y-4">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+                                    <input type="text" id="firstName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+                                    <input type="text" id="lastName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                                <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                                <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="+62 812 3456 7890" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">ID Card Number *</label>
+                                <input type="text" id="idCard" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 1234567890123456" required>
+                                <p class="text-xs text-gray-500 mt-1">Required for verification purposes</p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row justify-between gap-3 pt-6 mt-6 border-t border-gray-200">
+                            <button id="prevStep2" class="px-6 py-2 text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-gray-50 flex items-center justify-center">
+                                <i data-feather="arrow-left" class="w-4 h-4 mr-2"></i>
+                                Back
+                            </button>
+                            <button id="nextStep2" class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 flex items-center justify-center">
+                                Continue to Payment
+                                <i data-feather="arrow-right" class="w-4 h-4 ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Payment -->
+                <div id="step3" class="step-content">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
+                        <h2 class="text-lg md:text-xl font-semibold mb-6">Payment Method</h2>
+                        
+                        <div class="space-y-3 mb-6">
+                            <label class="flex items-start p-4 border-2 border-blue-400 bg-blue-50 rounded-lg cursor-pointer">
+                                <input type="radio" name="payment" value="card" class="mt-1" checked>
+                                <div class="ml-3 flex-1">
+                                    <span class="block font-medium">Credit / Debit Card</span>
+                                    <div class="flex items-center space-x-2 mt-2">
+                                        <div class="w-10 h-6 bg-gradient-to-r from-blue-600 to-blue-400 rounded"></div>
+                                        <div class="w-10 h-6 bg-gradient-to-r from-red-600 to-orange-400 rounded"></div>
+                                        <div class="w-10 h-6 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded"></div>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-start p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-blue-400">
+                                <input type="radio" name="payment" value="bank" class="mt-1">
+                                <div class="ml-3 flex-1">
+                                    <span class="block font-medium">Bank Transfer</span>
+                                    <p class="text-sm text-gray-500 mt-1">Instructions will be provided after confirmation</p>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-start p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-blue-400">
+                                <input type="radio" name="payment" value="ewallet" class="mt-1">
+                                <div class="ml-3 flex-1">
+                                    <span class="block font-medium">E-Wallet</span>
+                                    <p class="text-sm text-gray-500 mt-1">GoPay, OVO, Dana, LinkAja</p>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div id="cardDetails" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Card Number *</label>
+                                <input type="text" id="cardNumber" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="1234 5678 9012 3456" maxlength="19">
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Expiry Date *</label>
+                                    <input type="text" id="expiryDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="MM/YY" maxlength="5">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">CVV *</label>
+                                    <input type="text" id="cvv" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="123" maxlength="3">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Cardholder Name *</label>
+                                <input type="text" id="cardName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Name on card">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row justify-between gap-3 pt-6 mt-6 border-t border-gray-200">
+                            <button id="prevStep3" class="px-6 py-2 text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-gray-50 flex items-center justify-center">
+                                <i data-feather="arrow-left" class="w-4 h-4 mr-2"></i>
+                                Back
+                            </button>
+                            <button id="completeOrder" class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 flex items-center justify-center">
+                                Complete Order
+                                <i data-feather="check" class="w-4 h-4 ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Confirmation -->
+                <div id="step4" class="step-content">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 text-center">
+                        <div class="w-16 h-16 md:w-20 md:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-feather="check-circle" class="w-10 h-10 md:w-12 md:h-12 text-green-600"></i>
+                        </div>
+                        <h2 class="text-xl md:text-2xl font-bold mb-2">Order Confirmed!</h2>
+                        <p class="text-gray-600 mb-6">Your rental has been successfully booked</p>
+                        
+                        <div class="bg-gray-50 rounded-lg p-4 md:p-6 mb-6 text-left">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-600">Order ID:</span>
+                                <span class="font-medium">#RNT-2024-0421</span>
+                            </div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-600">Item:</span>
+                                <span class="font-medium">Sony A7 III</span>
+                            </div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-600">Duration:</span>
+                                <span class="font-medium" id="confirmDuration">3 days</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Total Paid:</span>
+                                <span class="font-medium text-blue-600" id="confirmTotal">Rp 517,500</span>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <button class="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
+                                View Order Details
+                            </button>
+                            <button class="w-full px-6 py-3 text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-gray-50">
+                                Continue Shopping
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Order Summary -->
+            <div class="lg:col-span-1">
+                <div class="sticky-summary">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="p-4 md:p-6 border-b border-gray-200">
+                            <h2 class="text-lg font-semibold">Order Summary</h2>
+                        </div>
+                        
+                        <div class="p-4 md:p-6 border-b border-gray-200">
+                            <div class="flex items-center mb-4">
+                                <div class="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 overflow-hidden mr-3 flex items-center justify-center">
+                                    <i data-feather="camera" class="w-8 h-8 text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-sm">Sony A7 III</h3>
+                                    <p class="text-xs text-gray-500"><span id="summaryDays">-</span> rental</p>
+                                    <p class="text-sm font-medium text-blue-600 mt-1" id="summaryBasePrice">Rp 0</p>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Base Price</span>
+                                    <span id="basePriceDisplay">Rp 0</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Quantity</span>
+                                    <span id="qtyDisplay">1x</span>
+                                </div>
+                                <div class="flex justify-between" id="addonsRow">
+                                    <span class="text-gray-600">Add-ons</span>
+                                    <span id="addonsDisplay">Rp 0</span>
+                                </div>
+                                <div class="flex justify-between" id="deliveryRow">
+                                    <span class="text-gray-600">Delivery</span>
+                                    <span id="deliveryDisplay">Rp 0</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Service Fee</span>
+                                    <span id="serviceFeeDisplay">Rp 0</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Insurance</span>
+                                    <span id="insuranceDisplay">Rp 0</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 md:p-6">
+                            <div class="flex justify-between font-medium text-base md:text-lg mb-2">
+                                <span>Subtotal</span>
+                                <span id="subtotalDisplay">Rp 0</span>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-500 mb-4">
+                                <span>Deposit (at pickup)</span>
+                                <span>Rp 500,000</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-lg md:text-xl border-t border-gray-200 pt-4">
+                                <span>Total</span>
+                                <span id="totalDisplay">Rp 500,000</span>
+                            </div>
+                            
+                            <div class="mt-6 pt-6 border-t border-gray-200">
+                                <div class="flex items-center justify-center space-x-2 text-gray-500">
+                                    <i data-feather="lock" class="w-4 h-4"></i>
+                                    <span class="text-sm">Secure SSL Encryption</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Protection Info -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 mt-4 p-4 md:p-6">
+                        <h3 class="font-medium mb-3">Your Rental Includes</h3>
+                        <ul class="space-y-3 text-sm">
+                            <li class="flex items-start">
+                                <i data-feather="shield" class="w-4 h-4 text-green-500 mt-0.5 mr-2 flex-shrink-0"></i>
+                                <span>Damage protection up to Rp 10,000,000</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-feather="clock" class="w-4 h-4 text-blue-500 mt-0.5 mr-2 flex-shrink-0"></i>
+                                <span>24/7 customer support</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-feather="dollar-sign" class="w-4 h-4 text-purple-500 mt-0.5 mr-2 flex-shrink-0"></i>
+                                <span>Free cancellation up to 24 hours before rental</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Sticky CTA -->
+    <div class="mobile-sticky-summary lg:hidden">
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-sm text-gray-600">Total</p>
+                <p class="text-lg font-bold" id="mobileTotalDisplay">Rp 500,000</p>
+            </div>
+            <button id="mobileContinue" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
+                Continue
+            </button>
+        </div>
+    </div>
+
+    <script>
+        feather.replace();
+        
+        // State management
+        const state = {
+            currentStep: 1,
+            dailyPrice: 150000,
+            quantity: 1,
+            days: 0,
+            startDate: null,
+            endDate: null,
+            delivery: 'pickup',
+            addons: [],
+            deliveryFee: 50000
+        };
+
+        // Format currency
+        function formatRupiah(amount) {
+            return 'Rp ' + amount.toLocaleString('id-ID');
+        }
+
+        // Calculate prices
+        function calculatePrices() {
+            const basePrice = state.dailyPrice * state.days * state.quantity;
+            const addonsTotal = state.addons.reduce((sum, addon) => sum + (addon.price * state.days), 0);
+            const deliveryFee = state.delivery === 'delivery' ? state.deliveryFee : 0;
+            const serviceFee = Math.round((basePrice + addonsTotal) * 0.1);
+            const insurance = Math.round((basePrice + addonsTotal) * 0.05);
+            const subtotal = basePrice + addonsTotal + deliveryFee + serviceFee + insurance;
+            const deposit = 500000;
+            const total = subtotal + deposit;
+
+            return {
+                basePrice,
+                addonsTotal,
+                deliveryFee,
+                serviceFee,
+                insurance,
+                subtotal,
+                deposit,
+                total
+            };
+        }
+
+        // Update summary
+        function updateSummary() {
+            const prices = calculatePrices();
+            
+            document.getElementById('summaryDays').textContent = state.days > 0 ? `${state.days} days` : '-';
+            document.getElementById('summaryBasePrice').textContent = formatRupiah(prices.basePrice);
+            document.getElementById('basePriceDisplay').textContent = formatRupiah(prices.basePrice);
+            document.getElementById('qtyDisplay').textContent = `${state.quantity}x`;
+            document.getElementById('addonsDisplay').textContent = formatRupiah(prices.addonsTotal);
+            document.getElementById('deliveryDisplay').textContent = formatRupiah(prices.deliveryFee);
+            document.getElementById('serviceFeeDisplay').textContent = formatRupiah(prices.serviceFee);
+            document.getElementById('insuranceDisplay').textContent = formatRupiah(prices.insurance);
+            document.getElementById('subtotalDisplay').textContent = formatRupiah(prices.subtotal);
+            document.getElementById('totalDisplay').textContent = formatRupiah(prices.total);
+            document.getElementById('mobileTotalDisplay').textContent = formatRupiah(prices.total);
+            
+            feather.replace();
+        }
+
+        // Date picker
+        function createDatePicker(inputId, pickerId, type) {
+            const input = document.getElementById(inputId);
+            const picker = document.getElementById(pickerId);
+            
+            input.addEventListener('click', () => {
+                document.querySelectorAll('.date-picker').forEach(p => {
+                    if (p.id !== pickerId) p.classList.remove('active');
+                });
+                picker.classList.toggle('active');
+                renderCalendar(picker, type);
+            });
+        }
+
+        function renderCalendar(picker, type) {
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+            
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startDay = firstDay.getDay();
+            
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
+            
+            let html = `
+                <div class="p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="font-medium">${monthNames[currentMonth]} ${currentYear}</span>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-xs mb-2">
+                        <div class="font-medium text-gray-500">Su</div>
+                        <div class="font-medium text-gray-500">Mo</div>
+                        <div class="font-medium text-gray-500">Tu</div>
+                        <div class="font-medium text-gray-500">We</div>
+                        <div class="font-medium text-gray-500">Th</div>
+                        <div class="font-medium text-gray-500">Fr</div>
+                        <div class="font-medium text-gray-500">Sa</div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-sm">
+            `;
+            
+            // Empty cells before first day
+            for (let i = 0; i < startDay; i++) {
+                html += '<div></div>';
+            }
+            
+            // Days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(currentYear, currentMonth, day);
+                const dateStr = date.toISOString().split('T')[0];
+                const isPast = date < today.setHours(0, 0, 0, 0);
+                const isDisabled = isPast || (type === 'end' && state.startDate && date <= new Date(state.startDate));
+                
+                html += `<div class="date-cell w-8 h-8 flex items-center justify-center rounded ${isDisabled ? 'disabled' : ''}" 
+                         data-date="${dateStr}" data-type="${type}">${day}</div>`;
+            }
+            
+            html += '</div></div>';
+            picker.innerHTML = html;
+            
+            // Add click handlers
+            picker.querySelectorAll('.date-cell:not(.disabled)').forEach(cell => {
+                cell.addEventListener('click', (e) => {
+                    const selectedDate = e.target.dataset.date;
+                    const dateType = e.target.dataset.type;
+                    
+                    if (dateType === 'start') {
+                        state.startDate = selectedDate;
+                        document.getElementById('startDate').value = new Date(selectedDate).toLocaleDateString('id-ID');
+                        if (state.endDate && new Date(state.endDate) <= new Date(selectedDate)) {
+                            state.endDate = null;
+                            document.getElementById('endDate').value = '';
+                        }
+                    } else {
+                        state.endDate = selectedDate;
+                        document.getElementById('endDate').value = new Date(selectedDate).toLocaleDateString('id-ID');
+                    }
+                    
+                    updateDuration();
+                    picker.classList.remove('active');
+                });
+            });
+        }
+
+        function updateDuration() {
+            if (state.startDate && state.endDate) {
+                const start = new Date(state.startDate);
+                const end = new Date(state.endDate);
+                state.days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+                
+                const startStr = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                const endStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                
+                document.getElementById('durationText').innerHTML = `
+                    <i data-feather="clock" class="w-4 h-4 mr-1"></i>
+                    Duration: <span class="font-medium">${state.days} days</span> (${startStr} - ${endStr})
+                `;
+                feather.replace();
+            }
+            updateSummary();
+        }
+
+        // Quantity handlers
+        document.getElementById('decreaseQty').addEventListener('click', () => {
+            if (state.quantity > 1) {
+                state.quantity--;
+                document.getElementById('quantity').textContent = state.quantity;
+                updateSummary();
+            }
+        });
+
+        document.getElementById('increaseQty').addEventListener('click', () => {
+            if (state.quantity < 2) {
+                state.quantity++;
+                document.getElementById('quantity').textContent = state.quantity;
+                updateSummary();
+            }
+        });
+
+        // Delivery method
+        document.querySelectorAll('input[name="delivery"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                state.delivery = e.target.value;
+                document.getElementById('deliveryAddress').disabled = e.target.value !== 'delivery';
+                
+                // Update UI
+                document.querySelectorAll('input[name="delivery"]').forEach(r => {
+                    const label = r.closest('label');
+                    if (r.checked) {
+                        label.classList.add('border-2', 'border-blue-400', 'bg-blue-50');
+                        label.classList.remove('border', 'border-gray-200');
+                    } else {
+                        label.classList.remove('border-2', 'border-blue-400', 'bg-blue-50');
+                        label.classList.add('border', 'border-gray-200');
+                    }
+                });
+                
+                updateSummary();
+            });
+        });
+
+        // Add-ons
+        document.querySelectorAll('.addon-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const price = parseInt(e.target.dataset.price);
+                const name = e.target.dataset.name;
+                
+                if (e.target.checked) {
+                    state.addons.push({ name, price });
+                } else {
+                    state.addons = state.addons.filter(a => a.name !== name);
+                }
+                updateSummary();
+            });
+        });
+
+        // Notes character count
+        document.getElementById('notes').addEventListener('input', (e) => {
+            document.getElementById('charCount').textContent = e.target.value.length;
+        });
+
+        // Payment method
+        document.querySelectorAll('input[name="payment"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const cardDetails = document.getElementById('cardDetails');
+                cardDetails.style.display = e.target.value === 'card' ? 'block' : 'none';
+                
+                // Update UI
+                document.querySelectorAll('input[name="payment"]').forEach(r => {
+                    const label = r.closest('label');
+                    if (r.checked) {
+                        label.classList.add('border-2', 'border-blue-400', 'bg-blue-50');
+                        label.classList.remove('border', 'border-gray-200');
+                    } else {
+                        label.classList.remove('border-2', 'border-blue-400', 'bg-blue-50');
+                        label.classList.add('border', 'border-gray-200');
+                    }
+                });
+            });
+        });
+
+        // Card number formatting
+        document.getElementById('cardNumber').addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+
+        // Expiry date formatting
+        document.getElementById('expiryDate').addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            e.target.value = value;
+        });
+
+        // CVV formatting
+        document.getElementById('cvv').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        // Step navigation
+        function updateProgressSteps() {
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index + 1 < state.currentStep) {
+                    step.classList.add('completed');
+                } else if (index + 1 === state.currentStep) {
+                    step.classList.add('active');
+                }
+            });
+            
+            document.getElementById('currentStepNum').textContent = state.currentStep;
+        }
+
+        function showStep(stepNum) {
+            document.querySelectorAll('.step-content').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById(`step${stepNum}`).classList.add('active');
+            state.currentStep = stepNum;
+            updateProgressSteps();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            feather.replace();
+        }
+
+        function showToast(message, type = 'error') {
+            const toast = document.createElement('div');
+            toast.className = `toast bg-white border-l-4 ${type === 'error' ? 'border-red-500' : 'border-green-500'} rounded-lg shadow-lg p-4`;
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <i data-feather="${type === 'error' ? 'alert-circle' : 'check-circle'}" class="w-5 h-5 ${type === 'error' ? 'text-red-500' : 'text-green-500'} mr-3"></i>
+                    <p class="text-gray-800">${message}</p>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            feather.replace();
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Step 1 validation
+        document.getElementById('nextStep1').addEventListener('click', () => {
+            if (!state.startDate || !state.endDate) {
+                showToast('Please select rental dates');
+                return;
+            }
+            if (state.days < 1) {
+                showToast('Rental period must be at least 1 day');
+                return;
+            }
+            if (state.delivery === 'delivery' && !document.getElementById('deliveryAddress').value) {
+                showToast('Please enter delivery address');
+                return;
+            }
+            showStep(2);
+        });
+
+        document.getElementById('prevStep2').addEventListener('click', () => showStep(1));
+
+        // Step 2 validation
+        document.getElementById('nextStep2').addEventListener('click', () => {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const idCard = document.getElementById('idCard').value.trim();
+
+            if (!firstName || !lastName || !email || !phone || !idCard) {
+                showToast('Please fill in all required fields');
+                return;
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showToast('Please enter a valid email address');
+                return;
+            }
+
+            showStep(3);
+        });
+
+        document.getElementById('prevStep3').addEventListener('click', () => showStep(2));
+
+        // Complete order
+        document.getElementById('completeOrder').addEventListener('click', () => {
+            const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+            
+            if (paymentMethod === 'card') {
+                const cardNumber = document.getElementById('cardNumber').value.trim();
+                const expiryDate = document.getElementById('expiryDate').value.trim();
+                const cvv = document.getElementById('cvv').value.trim();
+                const cardName = document.getElementById('cardName').value.trim();
+
+                if (!cardNumber || !expiryDate || !cvv || !cardName) {
+                    showToast('Please fill in all card details');
+                    return;
+                }
+
+                if (cardNumber.replace(/\s/g, '').length !== 16) {
+                    showToast('Please enter a valid card number');
+                    return;
+                }
+
+                if (cvv.length !== 3) {
+                    showToast('Please enter a valid CVV');
+                    return;
+                }
+            }
+
+            // Update confirmation page
+            const prices = calculatePrices();
+            document.getElementById('confirmDuration').textContent = `${state.days} days`;
+            document.getElementById('confirmTotal').textContent = formatRupiah(prices.subtotal);
+
+            showStep(4);
+            showToast('Order completed successfully!', 'success');
+        });
+
+        // Mobile continue button
+        document.getElementById('mobileContinue').addEventListener('click', () => {
+            if (state.currentStep === 1) {
+                document.getElementById('nextStep1').click();
+            } else if (state.currentStep === 2) {
+                document.getElementById('nextStep2').click();
+            } else if (state.currentStep === 3) {
+                document.getElementById('completeOrder').click();
+            }
+        });
+
+        // Close date pickers when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.date-picker') && !e.target.closest('#startDate') && !e.target.closest('#endDate')) {
+                document.querySelectorAll('.date-picker').forEach(p => p.classList.remove('active'));
+            }
+        });
+
+        // Initialize
+        createDatePicker('startDate', 'startDatePicker', 'start');
+        createDatePicker('endDate', 'endDatePicker', 'end');
+        updateSummary();
+        feather.replace();
+    </script>
+</body>
+</html>

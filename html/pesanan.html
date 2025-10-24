@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sewa-In - Status & Riwayat Pesanan</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .badge-pending {
+            background-color: #FFFBEB;
+            color: #F59E0B;
+            border: 1px solid #FDE68A;
+        }
+        
+        .badge-active {
+            background-color: #EFF6FF;
+            color: #2563EB;
+            border: 1px solid #BFDBFE;
+        }
+        
+        .badge-completed {
+            background-color: #F9FAFB;
+            color: #6B7280;
+            border: 1px solid #E5E7EB;
+        }
+        
+        .badge-cancelled {
+            background-color: #FEF2F2;
+            color: #EF4444;
+            border: 1px solid #FECACA;
+        }
+        
+        .badge-confirmed {
+            background-color: #ECFDF5;
+            color: #10B981;
+            border: 1px solid #A7F3D0;
+        }
+        
+        .pulse-ring {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+            }
+        }
+        
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .timeline-step.completed .timeline-dot {
+            background-color: #10B981;
+            color: white;
+        }
+        
+        .timeline-step.active .timeline-dot {
+            background-color: #2563EB;
+            color: white;
+            animation: pulse-ring 2s infinite;
+        }
+        
+        .timeline-step.pending .timeline-dot {
+            background-color: white;
+            color: #9CA3AF;
+            border: 3px solid #D1D5DB;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header Navigation -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <h1 class="text-2xl font-bold text-blue-600">Sewa-In</h1>
+                <span class="ml-2 text-sm text-gray-500">Status Pesanan</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <input type="search" placeholder="Cari pesanan..." class="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <i data-feather="search" class="absolute left-3 top-2.5 text-gray-400"></i>
+                </div>
+                <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 relative">
+                    <i data-feather="bell"></i>
+                    <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                </button>
+                <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">AS</div>
+            </div>
+        </div>
+        <nav class="container mx-auto px-4">
+            <ul class="flex space-x-6">
+                <li><a href="#" class="py-4 text-gray-500 hover:text-blue-600">Beranda</a></li>
+                <li><a href="#" class="py-4 text-gray-500 hover:text-blue-600">Kategori</a></li>
+                <li><a href="#" class="py-4 text-blue-600 font-medium border-b-2 border-blue-600">Pesanan Saya</a></li>
+                <li><a href="#" class="py-4 text-gray-500 hover:text-blue-600">Bantuan</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <button class="flex items-center text-gray-600 hover:text-blue-600 mb-4">
+                <i data-feather="arrow-left" class="w-4 h-4 mr-2"></i>
+                Kembali
+            </button>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Pesanan Saya</h1>
+            <p class="text-gray-600">Kelola dan pantau semua rental Anda</p>
+            
+            <!-- Tabs Navigation -->
+            <div class="flex border-b border-gray-200 mt-6">
+                <button class="px-4 py-3 font-medium text-blue-600 border-b-2 border-blue-600 mr-4">Aktif (3)</button>
+                <button class="px-4 py-3 font-medium text-gray-500 hover:text-blue-600 mr-4">Selesai (12)</button>
+                <button class="px-4 py-3 font-medium text-gray-500 hover:text-blue-600 mr-4">Semua (15)</button>
+                <button class="px-4 py-3 font-medium text-gray-500 hover:text-blue-600">Sebagai Pemilik</button>
+            </div>
+        </div>
+
+        <!-- Filters & Search -->
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="relative flex-1">
+                    <i data-feather="search" class="absolute left-3 top-3 text-gray-400"></i>
+                    <input type="search" placeholder="Cari berdasarkan item, ID..." class="pl-10 pr-4 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <select class="px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option>Status</option>
+                        <option>Menunggu Pembayaran</option>
+                        <option>Dikonfirmasi</option>
+                        <option>Sedang Disewa</option>
+                        <option>Selesai</option>
+                    </select>
+                    <select class="px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option>Kategori</option>
+                        <option>Elektronik</option>
+                        <option>Kendaraan</option>
+                        <option>Peralatan Event</option>
+                    </select>
+                    <select class="px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option>Tanggal</option>
+                        <option>Hari Ini</option>
+                        <option>Minggu Ini</option>
+                        <option>Bulan Ini</option>
+                    </select>
+                    <select class="px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option>Urutkan: Terbaru</option>
+                        <option>Terlama</option>
+                        <option>Harga Tertinggi</option>
+                        <option>Harga Terendah</option>
+                    </select>
+                    <button class="px-3 py-2 text-gray-500 hover:text-blue-600">Clear Filters</button>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mt-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    Status: Aktif
+                    <button type="button" class="flex-shrink-0 ml-1.5 inline-flex text-blue-400 hover:text-blue-600">
+                        <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                            <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7"/>
+                        </svg>
+                    </button>
+                </span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    Kategori: Elektronik
+                    <button type="button" class="flex-shrink-0 ml-1.5 inline-flex text-green-400 hover:text-green-600">
+                        <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                            <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7"/>
+                        </svg>
+                    </button>
+                </span>
+            </div>
+        </div>
+
+        <!-- Dual View Layout -->
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Left Panel - Orders List -->
+            <div class="lg:w-2/5">
+                <!-- Empty State -->
+                <!-- <div class="bg-white rounded-lg shadow-sm p-8 text-center">
+                    <i data-feather="package" class="w-12 h-12 mx-auto text-gray-400 mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Pesanan</h3>
+                    <p class="text-gray-500 mb-6">Mulai rental pertama Anda dan pantau di sini</p>
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Jelajahi Katalog</button>
+                </div> -->
+
+                <!-- Order Cards -->
+                <div class="space-y-4">
+                    <!-- Order Card 1 (Active - Selected) -->
+                    <div class="bg-white rounded-lg shadow-sm border-2 border-blue-500 p-4 cursor-pointer transition-all duration-200">
+                        <div class="flex items-start gap-4">
+                            <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                                <img src="http://static.photos/technology/200x200/1" alt="Kamera Sony A7 III" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-semibold text-gray-900 truncate">Kamera Sony A7 III + Lensa Kit</h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium badge-active flex items-center">
+                                        <i data-feather="rotate-cw" class="w-3 h-3 mr-1"></i>
+                                        Sedang Disewa
+                                    </span>
+                                    <span class="text-xs text-gray-500">#SWI-2025-001234</span>
+                                </div>
+                                <div class="flex items-center gap-1 mt-2 text-sm text-gray-600">
+                                    <i data-feather="calendar" class="w-4 h-4"></i>
+                                    <span>25 - 28 Okt 2025 (3 hari)</span>
+                                </div>
+                                <div class="flex items-center gap-1 mt-1 text-sm text-gray-600">
+                                    <div class="w-4 h-4 rounded-full bg-gray-300 flex items-center justify-center text-xs">B</div>
+                                    <span>Budi Santoso</span>
+                                </div>
+                                <div class="mt-2 font-semibold text-gray-900">Rp 522.500</div>
+                                <div class="mt-3 flex gap-2">
+                                    <button class="px-3 py-1.5 text-sm bg-white text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50">Hubungi Pemilik</button>
+                                    <button class="px-3 py-1.5 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200">Detail</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t">
+                            <div class="flex justify-between text-xs text-gray-600 mb-1">
+                                <span>Progress</span>
+                                <span>2 dari 3 hari</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 66%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Card 2 -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 cursor-pointer hover:border-blue-500 transition-all duration-200">
+                        <div class="flex items-start gap-4">
+                            <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                                <img src="http://static.photos/technology/200x200/2" alt="Drone DJI Mavic" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-semibold text-gray-900 truncate">Drone DJI Mavic Air 2 Fly More Combo</h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium badge-confirmed flex items-center">
+                                        <i data-feather="check" class="w-3 h-3 mr-1"></i>
+                                        Dikonfirmasi
+                                    </span>
+                                    <span class="text-xs text-gray-500">#SWI-2025-001235</span>
+                                </div>
+                                <div class="flex items-center gap-1 mt-2 text-sm text-gray-600">
+                                    <i data-feather="calendar" class="w-4 h-4"></i>
+                                    <span>30 Okt - 2 Nov 2025 (3 hari)</span>
+                                </div>
+                                <div class="flex items-center gap-1 mt-1 text-sm text-gray-600">
+                                    <div class="w-4 h-4 rounded-full bg-gray-300 flex items-center justify-center text-xs">R</div>
+                                    <span>Rina Wijaya</span>
+                                </div>
+                                <div class="mt-2 font-semibold text-gray-900">Rp 850.000</div>
+                                <div class="mt-3 flex gap-2">
+                                    <button class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700">Lihat Lokasi</button>
+                                    <button class="px-3 py-1.5 text-sm bg-white text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50">Hubungi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Card 3 -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 cursor-pointer hover:border-blue-500 transition-all duration-200">
+                        <div class="flex items-start gap-4">
+                            <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                                <img src="http://static.photos/technology/200x200/3" alt="GoPro Hero 9" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-semibold text-gray-900 truncate">GoPro Hero 9 Black + Aksesoris</h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium badge-pending flex items-center">
+                                        <i data-feather="clock" class="w-3 h-3 mr-1"></i>
+                                        Menunggu Pembayaran
+                                    </span>
+                                    <span class="text-xs text-gray-500">#SWI-2025-001236</span>
+                                </div>
+                                <div class="flex items-center gap-1 mt-2 text-sm text-gray-600">
+                                    <i data-feather="calendar" class="w-4 h-4"></i>
+</body>
+</html>

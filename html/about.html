@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang Kami - Sewa-In | Platform Rental Terpercaya Indonesia</title>
+    <meta name="description" content="Kenali lebih dekat Sewa-In - platform rental terpercaya yang telah membantu 50,000+ pengguna mengakses berbagai aset tanpa harus membeli">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#EFF6FF',
+                            600: '#2563EB',
+                            700: '#1D4ED8',
+                        },
+                        secondary: {
+                            500: '#10B981'
+                        },
+                        accent: {
+                            500: '#F59E0B'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <!-- Custom Styles -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap');
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.9) 0%, rgba(16, 185, 129, 0.8) 100%);
+        }
+        
+        .timeline-dot::before {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background-color: #2563EB;
+            z-index: 10;
+        }
+        
+        .team-card:hover .team-overlay {
+            opacity: 1;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .stat-number {
+            font-feature-settings: "tnum";
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 antialiased">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white shadow-sm z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="text-2xl font-bold text-primary-600 flex items-center">
+                        <i data-feather="box" class="mr-2"></i>Sewa-In
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-gray-600 hover:text-primary-600">Beranda</a>
+                    <a href="#" class="text-gray-600 hover:text-primary-600">Kategori</a>
+                    <a href="#" class="text-gray-600 hover:text-primary-600">Cara Kerja</a>
+                    <a href="#" class="text-primary-600 font-medium">Tentang Kami</a>
+                    <a href="#" class="text-gray-600 hover:text-primary-600">Bantuan</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="hidden md:block px-4 py-2 border border-primary-600 text-primary-600 rounded-lg hover:bg-primary-50">Masuk</a>
+                    <a href="#" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">Daftar</a>
+                    <button class="md:hidden">
+                        <i data-feather="menu"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-20 md:pt-32 md:pb-28 hero-gradient min-h-screen flex items-center justify-center text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="uppercase tracking-wider text-sm mb-4 opacity-90">Perjalanan Kami Dimulai dari</p>
+            <h1 class="text-4xl md:text-5xl font-bold mb-6 max-w-3xl mx-auto leading-tight">
+                Membuat Sewa-Menyewa Menjadi Mudah untuk Semua Orang
+            </h1>
+            <p class="text-lg md:text-xl max-w-3xl mx-auto opacity-90">
+                Sejak 2022, Sewa-In telah membantu 50,000+ orang mengakses barang yang mereka butuhkan tanpa harus membeli
+            </p>
+            <div class="mt-12 animate-bounce">
+                <i data-feather="chevron-down" class="w-8 h-8"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Company Overview -->
+    <section class="py-16 md:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center gap-12 lg:gap-16">
+                <div class="md:w-1/2 relative">
+                    <img src="http://static.photos/office/1024x576/10" alt="Tim Sewa-In" class="rounded-xl shadow-lg w-full">
+                    <div class="absolute -top-4 -right-4 bg-primary-600 text-white px-4 py-2 rounded-lg shadow-md">
+                        <span class="font-bold">Est. 2022</span>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2 mt-8 md:mt-0">
+                    <p class="text-primary-600 font-semibold mb-2">Tentang Sewa-In</p>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Platform Rental yang Menghubungkan Pemilik & Penyewa</h2>
+                    
+                    <p class="mb-4 text-gray-600 leading-relaxed">
+                        Sewa-In lahir dari pengalaman pribadi founder kami yang kesulitan menyewa kamera untuk kebutuhan mendadak. Kami menyadari bahwa proses sewa-menyewa di Indonesia masih terlalu rumit dan tidak terpercaya.
+                    </p>
+                    
+                    <p class="mb-4 text-gray-600 leading-relaxed">
+                        Kami percaya bahwa kepemilikan bukan satu-satunya cara untuk mengakses barang berkualitas. Dengan teknologi dan komunitas yang kuat, Sewa-In hadir untuk menjawab kebutuhan ini dengan cara yang aman, mudah, dan menguntungkan semua pihak.
+                    </p>
+                    
+                    <p class="mb-6 text-gray-600 leading-relaxed">
+                        Hari ini, Sewa-In telah berkembang menjadi platform terdepan di Indonesia dengan ribuan aset berkualitas yang siap disewakan. Misi kami adalah membuat akses ke barang-barang berkualitas menjadi lebih demokratis.
+                    </p>
+                    
+                    <a href="#" class="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition duration-300">
+                        Lihat Bagaimana Kami Kerja
+                        <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission, Vision & Values -->
+    <section class="py-16 md:py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Nilai-Nilai Inti Kami</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Fondasi yang membangun budaya dan layanan Sewa-In
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Mission Card -->
+                <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+                    <div class="bg-primary-50 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                        <i data-feather="target" class="text-primary-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Misi Kami</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        "Memudahkan akses ke berbagai aset dengan membangun ekosistem sewa-menyewa yang aman, terpercaya, dan saling menguntungkan"
+                    </p>
+                </div>
+                
+                <!-- Vision Card -->
+                <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+                    <div class="bg-primary-50 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                        <i data-feather="eye" class="text-primary-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Visi Kami</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        "Menjadi platform rental #1 di Indonesia yang memberdayakan ekonomi berbagi dan mendorong konsumsi berkelanjutan"
+                    </p>
+                </div>
+                
+                <!-- Values Card -->
+                <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+                    <div class="bg-primary-50 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                        <i data-feather="heart" class="text-primary-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Nilai Kami</h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i data-feather="check" class="text-secondary-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Trust First</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="text-secondary-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Innovation Always</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="text-secondary-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Community Driven</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="text-secondary-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Sustainable Growth</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="text-secondary-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>User Empowerment</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics -->
+    <section class="py-16 md:py-24 bg-primary-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Dampak yang Kami Ciptakan</h2>
+                <p class="text-lg opacity-90 max-w-3xl mx-auto">
+                    Angka-angka yang berbicara tentang perjalanan kami
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="text-4xl md:text-5xl font-bold mb-2 stat-number">50,000+</div>
+                    <p class="text-sm uppercase tracking-wider opacity-90">Pengguna Aktif</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="text-4xl md:text-5xl font-bold mb-2 stat-number">15,000+</div>
+                    <p class="text-sm uppercase tracking-wider opacity-90">Aset Listed</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="text-4xl md:text-5xl font-bold mb-2 stat-number">4.8<span class="text-xl">/5.0</span></div>
+                    <p class="text-sm uppercase tracking-wider opacity-90">Rating Users</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="text-4xl md:text-5xl font-bold mb-2 stat-number">500K+</div>
+                    <p class="text-sm uppercase tracking-wider opacity-90">Trans. Sukses</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Deep Dive -->
+    <section class="py-16 md:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Apa yang Membuat Kami Berbeda</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Nilai-nilai yang tidak hanya kami ucapkan, tapi kami jalankan setiap hari
+                </p>
+            </div>
+            
+            <!-- Value 1 -->
+            <div class="flex flex-col md:flex-row items-center gap-12 mb-20">
+                <div class="md:w-1/2">
+                    <div class="bg-primary-50 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                        <i data-feather="shield" class="text-primary-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold mb-4">Trust First</h3>
+                    <p class="text-gray-600 mb-4 leading-relaxed">
+                        Kepercayaan adalah dasar dari semua transaksi di Sewa-In. Kami membangun sistem keamanan berlapis untuk melindungi semua pihak:
+                    </p>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i data-feather="check" class="text-secondary-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Verifikasi KYC untuk semua pengguna</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="text-secondary-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Sistem pembayaran escrow yang aman</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="text-secondary-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Asuransi untuk setiap transaksi</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="text-secondary-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Tim verifikasi aset berkualitas</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="md:w-1/2 mt-8 md:mt-0">
+                    <img src="http://static.photos/security/640x360/5" alt="Keamanan Sewa-In" class="rounded-xl shadow-lg w-full">
+                </div>
+            </div>
+            
+            <!-- Value 2 -->
+            <div class="flex flex-col md:flex-row-reverse items-center gap-12 mb-20">
+                <div class="md:w-1/2">
+                    <div class="bg-primary-50 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                        <i data-feather="zap" class="text-primary-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold mb-4">Innovation Always</h3>
+                    <p class="text-gray-600 mb-4 leading-relaxed">
+                        Teknologi adalah DNA kami. Kami terus berinovasi untuk memberikan pengalaman terbaik:
+                    </p>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i data-feather="check" class="text-secondary-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>AI matching untuk rekomendasi aset terbaik</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="text-secondary-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Smart pricing untuk harga yang adil</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="text-secondary-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Kontrak digital otomatis</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-feather="check" class="text-secondary-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Prediksi ketersediaan real-time</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="md:w-1/2 mt-8 md:mt-0">
+                    <img src="http://static.photos/technology/640x360/7" alt="Inovasi Sewa-In" class="rounded-xl shadow-lg w-full">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="py-16 md:py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Perjalanan Kami</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Dari ide sederhana menjadi platform rental terdepan di Indonesia
+                </p>
+            </div>
+            
+            <div class="relative pl-8 md:pl-16 timeline-line">
+                <!-- Milestone 1 -->
+                <div class="relative mb-12 pl-8 timeline-dot">
+                    <div class="bg-white p-6 md:p-8 rounded-xl shadow-md">
+                        <div class="text-primary-600 font-bold mb-2">2022 Q1</div>
+                        <h3 class="text-xl font-bold mb-3">Humble Beginnings</h3>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-600">
+                            <li>Ide Sewa-In lahir dari pengalaman pribadi</li>
+                            <li>3 founder dengan latar belakang berbeda</li>
+                            <li>3 bulan research & validasi pasar</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Milestone 2 -->
+                <div class="relative mb-12 pl-8 timeline-dot">
+                    <div class="bg-white p-6 md:p-8 rounded-xl shadow-md">
+                        <div class="text-primary-600 font-bold mb-2">2022 Q3</div>
+                        <h3 class="text-xl font-bold mb-3">MVP Launch</h3>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-600">
+                            <li>Soft launch dengan 50 early adopters</li>
+                            <li>Fokus pada kategori kamera & elektronik</li>
+                            <li>Bangun sistem verifikasi & asuransi pertama</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Milestone 3 -->
+                <div class="relative mb-12 pl-8 timeline-dot">
+                    <div class="bg-white p-6 md:p-8 rounded-xl shadow-md">
+                        <div class="text-primary-600 font-bold mb-2">2023 Q1</div>
+                        <h3 class="text-xl font-bold mb-3">Growth Phase</h3>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-600">
+                            <li>Series A funding $2M</li>
+                            <li>Ekspansi ke 10 kota besar Indonesia</li>
+                            <li>Pertumbuhan tim dari 3 menjadi 25 orang</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Next Milestone -->
+                <div class="relative pl-8 timeline-dot">
+                    <div class="bg-primary-50 border-2 border-primary-200 border-dashed p-6 md:p-8 rounded-xl">
+                        <div class="text-primary-600 font-bold mb-2">2025+</div>
+                        <h3 class="text-xl font-bold mb-3">What's Next</h3>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-600">
+                            <li>Ekspansi ke 100 kota di Indonesia</li>
+                            <li>Peluncuran internasional (Singapore, Malaysia)</li>
+                            <li>AI-powered recommendation engine</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="py-16 md:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Tim di Balik Sewa-In</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Kenalan dengan orang-orang yang membuat semua ini terjadi
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Founder 1 -->
+                <div class="team-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+                    <div class="relative">
+                        <img src="http://static.photos/people/640x360/1" alt="Budi Santoso" class="w-full h-64 object-cover">
+                        <div class="team-overlay">
+                            <a href="#" class="text-white hover:text-gray-200">
+                                <i data-feather="linkedin" class="w-6 h-6"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold">Budi Santoso</h3>
+                        <p class="text-primary-600 text-sm mb-3">CEO & Co-Founder</p>
+                        <p class="text-gray-500 italic">"Kami membangun lebih dari platform - kami membangun kepercayaan dalam cara baru mengakses barang"</p>
+                    </div>
+                </div>
+                
+                <!-- Founder 2 -->
+                <div class="team-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+                    <div class="relative">
+                        <img src="http://static.photos/people/640x360/2" alt="Ani Wijaya" class="w-full h-64 object-cover">
+                        <div class="team-overlay">
+                            <a href="#" class="text-white hover:text-gray-200">
+                                <i data-feather="linkedin" class="w-6 h-6"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold">Ani Wijaya</h3>
+                        <p class="text-primary-600 text-sm mb-3">CTO & Co-Founder</p>
+                        <p class="text-gray-500 italic">"Teknologi harus memecahkan masalah nyata dengan cara yang elegan dan mudah digunakan"</p>
+                    </div>
+                </div>
+                
+                <!-- Founder 3 -->
+                <div class="team-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+                    <div class="relative">
+                        <img src="http://static.photos/people/640x360/3" alt="Doni Pratama" class="w-full h-64 object-cover">
+                        <div class="team-overlay">
+                            <a href="#" class="text-white hover:text-gray-200">
+                                <i data-feather="linkedin" class="w-6 h-6"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold">Doni Pratama</h3>
+                        <p class="text-primary-600 text-sm mb-3">COO & Co-Founder</p>
+                        <p class="text-gray-500 italic">"Logistik adalah tulang punggung bisnis kami - kami membuatnya tak terlihat bagi user"</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Join Our Team -->
+            <div class="mt-16 bg-gradient-to-r from-primary-600 to-secondary-500 rounded-xl p-8 md:p-12 text-center">
+                <div class="max-w-2xl mx-auto">
+                    <i data-feather="briefcase" class="w-12 h-12 text-white mx-auto mb-4"></i>
+                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-4">Bergabung dengan Tim Kami</h3>
+                    <p class="text-white mb-6">
+                        Kami mencari individu passionate yang ingin membuat impact di dunia rental. Jika Anda menyukai tantangan dan ingin bekerja di lingkungan yang dinamis, kami ingin mendengar dari Anda!
+                    </p>
+                    <a href="#" class="inline-flex items-center px-6 py-3 bg-white text-primary-600 rounded-lg hover:bg-gray-100 transition duration-300 font-medium">
+                        Lihat Posisi Terbuka
+                        <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Responsibility -->
+    <section class="py-16 md:py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2">
+                    <img src="http://static.photos/nature/640x360/8" alt="Sustainability" class="rounded-xl shadow-lg w-full">
+                </div>
+                
+                <div class="md:w-1/2 mt-8 md:mt-0">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Komitmen Kami untuk Keberlanjutan</h2>
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        Sewa-In percaya pada ekonomi berbagi yang tidak hanya menguntungkan secara finansial, tetapi juga ramah lingkungan. Dengan memaksimalkan utilisasi aset yang ada, kami mengurangi jejak karbon dari produksi barang baru.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="bg-primary-50 w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 mr-4">
+                                <i data-feather="leaf" class="text-secondary-500 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">Carbon Footprint</h4>
+                                <p class="text-gray-600">Mengurangi jejak karbon hingga 30% dibanding model kepemilikan tradisional</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-primary-50 w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 mr-4">
+                                <i data-feather="repeat" class="text-secondary-500 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">Circular Economy</h4>
+                                <p class="text-gray-600">1M+ items shared daripada diproduksi baru sejak 2022</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-primary-50 w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 mr-4">
+                                <i data-feather="heart" class="text-secondary-500 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">Community Programs</h4>
+                                <p class="text-gray-600">Program rental gratis untuk NGO dan komunitas sosial</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="py-16 md:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Siap Memulai?</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Bergabunglah dengan komunitas penyewa dan pemilik aset terbesar di Indonesia
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="bg-primary-50 p-8 rounded-xl text-center">
+                    <h3 class="text-xl font-bold mb-3">Mulai Menyewa</h3>
+                    <p class="text-gray-600 mb-6">Temukan ribuan item siap sewa untuk semua kebutuhan Anda</p>
+                    <a href="#" class="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition duration-300">
+                        Jelajahi Katalog
+                        <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                    </a>
+                </div>
+                
+                <div class="bg-secondary-50 p-8 rounded-xl text-center">
+                    <h3 class="text-xl font-bold mb-3">Daftarkan Aset Anda</h3>
+                    <p class="text-gray-600 mb-6">Hasilkan pendapatan tambahan dari barang yang jarang digunakan</p>
+                    <a href="#" class="inline-flex items-center px-6 py-3 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600 transition duration-300">
+                        Daftar Sekarang
+                        <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <a href="#" class="text-2xl font-bold text-white flex items-center mb-4">
+                        <i data-feather="box" class="mr-2"></i>Sewa-In
+                    </a>
+                    <p class="mb-4">Platform rental terpercaya di Indonesia</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i data-feather="facebook" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i data-feather="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i data-feather="twitter" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i data-feather="linkedin" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Produk</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-white">Semua Kategori</a></li>
+                        <li><a href="#" class="hover:text-white">Aplikasi Mobile</a></li>
+                        <li><a href="#" class="hover:text-white">Untuk Bisnis</a></li>
+                        <li><a href="#" class="hover:text-white">Fitur Unggulan</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Perusahaan</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-white">Tentang Kami</a></li>
+                        <li><a href="#" class="hover:text-white">Blog</a></li>
+                        <li><a href="#" class="hover:text-white">Karir</a></li>
+                        <li><a href="#" class="hover:text-white">Partner</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Dukungan</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-white">Pusat Bantuan</a></li>
+                        <li><a href="#" class="hover:text-white">Kebijakan Privasi</a></li>
+                        <li><a href="#" class="hover:text-white">Syarat & Ketentuan</a></li>
+                        <li><a href="#" class="hover:text-white">Hubungi Kami</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-gray-800 text-sm text-center">
+                <p>&copy; 2024 Sewa-In. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+        
+        // Simple counter animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const counters = document.querySelectorAll('.stat-number');
+            const speed = 200;
+            
+            function animateCounter(element, target) {
+                let count = 0;
+                const increment = target / speed;
+                
+                const updateCount = () => {
+                    count += increment;
+                    if (count < target) {
+                        element.textContent = Math.floor(count).toLocaleString();
+                        setTimeout(updateCount, 1);
+                    } else {
+                        element.textContent = target.toLocaleString();
+                    }
+                };
+                
+                updateCount();
+            }
+            
+            // Intersection Observer for animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in');
+                        
+                        // If it's a counter element
+                        if (entry.target.classList.contains('stat-number')) {
+                            const target = parseInt(entry.target.textContent.replace(/,/g, ''));
+                            entry.target.textContent = '0';
+                            animateCounter(entry.target, target);
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            // Observe elements with animation class
+            document.querySelectorAll('.stat-number, .timeline-dot, .team-card').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

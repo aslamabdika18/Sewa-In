@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | RentalEase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .progress-step.active .step-number {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .progress-step.completed .step-number {
+            background-color: #10b981;
+            color: white;
+        }
+        .progress-step.completed .step-number::after {
+            content: "✓";
+        }
+        .sticky-summary {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 20px;
+        }
+        @media (max-width: 1023px) {
+            .mobile-sticky-cta {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 50;
+                box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Secure Header -->
+    <header class="bg-white border-b border-gray-200 py-4 px-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i data-feather="lock" class="text-green-500"></i>
+                <span class="text-sm font-medium text-gray-700">Secure Checkout</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="#" class="text-sm font-medium text-gray-600 hover:text-blue-600 flex items-center">
+                    <i data-feather="help-circle" class="w-4 h-4 mr-1"></i>
+                    Help
+                </a>
+                <div class="hidden md:flex items-center space-x-1">
+                    <i data-feather="phone" class="w-4 h-4 text-gray-500"></i>
+                    <span class="text-sm text-gray-600">24/7 Support: +62 812 3456 7890</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Progress Steps -->
+        <div class="mb-12">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-2xl font-bold text-gray-900">Complete Your Rental</h1>
+                <span class="text-sm text-gray-500">Step 1 of 4</span>
+            </div>
+            <div class="flex items-center">
+                <div class="progress-step active">
+                    <div class="step-number flex items-center justify-center w-8 h-8 rounded-full border-2 border-blue-500 font-medium">1</div>
+                    <span class="text-sm font-medium text-blue-600 mt-1">Rental Details</span>
+                </div>
+                <div class="flex-1 h-px bg-gray-300 mx-2"></div>
+                <div class="progress-step">
+                    <div class="step-number flex items-center justify-center w-8 h-8 rounded-full border-2 border-gray-300 font-medium">2</div>
+                    <span class="text-sm font-medium text-gray-500 mt-1">Your Info</span>
+                </div>
+                <div class="flex-1 h-px bg-gray-300 mx-2"></div>
+                <div class="progress-step">
+                    <div class="step-number flex items-center justify-center w-8 h-8 rounded-full border-2 border-gray-300 font-medium">3</div>
+                    <span class="text-sm font-medium text-gray-500 mt-1">Payment</span>
+                </div>
+                <div class="flex-1 h-px bg-gray-300 mx-2"></div>
+                <div class="progress-step">
+                    <div class="step-number flex items-center justify-center w-8 h-8 rounded-full border-2 border-gray-300 font-medium">4</div>
+                    <span class="text-sm font-medium text-gray-500 mt-1">Confirmation</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Left Column - Main Form -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                    <h2 class="text-xl font-semibold mb-6">Rental Details</h2>
+                    
+                    <!-- Item Preview -->
+                    <div class="flex items-start mb-8">
+                        <div class="w-24 h-24 rounded-lg bg-gray-100 overflow-hidden mr-4">
+                            <img src="http://static.photos/technology/320x240/42" alt="Product" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-900">Sony A7 III Mirrorless Camera</h3>
+                            <p class="text-gray-600 text-sm">Owner: Budi Santoso</p>
+                            <div class="flex items-center mt-1">
+                                <div class="flex text-amber-400">
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current text-gray-300"></i>
+                                </div>
+                                <span class="text-sm text-gray-500 ml-1">4.8 (127 reviews)</span>
+                            </div>
+                            <p class="text-blue-600 font-medium mt-2">Rp 150,000 / day</p>
+                        </div>
+                    </div>
+
+                    <!-- Date Range Picker -->
+                    <div class="mb-6">
+                        <h3 class="font-medium text-gray-700 mb-2">Rental Period</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                                <div class="relative">
+                                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Select date">
+                                    <i data-feather="calendar" class="absolute right-3 top-2.5 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                                <div class="relative">
+                                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Select date">
+                                    <i data-feather="calendar" class="absolute right-3 top-2.5 text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex items-center text-sm text-gray-500">
+                            <i data-feather="clock" class="w-4 h-4 mr-1"></i>
+                            <span>Duration: <span class="font-medium">3 days</span> (Oct 25 - Oct 28)</span>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Method -->
+                    <div class="mb-6">
+                        <h3 class="font-medium text-gray-700 mb-2">Delivery Method</h3>
+                        <div class="space-y-3">
+                            <label class="flex items-start p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-blue-400">
+                                <input type="radio" name="delivery" class="mt-1" checked>
+                                <div class="ml-3">
+                                    <span class="block font-medium">Pick Up (Free)</span>
+                                    <div class="flex items-center text-sm text-gray-500 mt-1">
+                                        <i data-feather="map-pin" class="w-4 h-4 mr-1"></i>
+                                        <span>Jl. Sudirman No. 123, Jakarta</span>
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-500 mt-1">
+                                        <i data-feather="clock" class="w-4 h-4 mr-1"></i>
+                                        <span>Mon-Fri: 9:00 AM - 6:00 PM</span>
+                                    </div>
+                                </div>
+                            </label>
+                            <label class="flex items-start p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-blue-400">
+                                <input type="radio" name="delivery" class="mt-1">
+                                <div class="ml-3">
+                                    <div class="flex justify-between">
+                                        <span class="block font-medium">Delivery (+Rp 50,000)</span>
+                                        <span class="text-sm font-medium">Rp 50,000</span>
+                                    </div>
+                                    <div class="mt-2">
+                                        <input type="text" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg" placeholder="Enter delivery address">
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-500 mt-2">
+                                        <i data-feather="clock" class="w-4 h-4 mr-1"></i>
+                                        <span>Estimated delivery time: 1-2 hours</span>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Quantity & Add-ons -->
+                    <div class="mb-6">
+                        <h3 class="font-medium text-gray-700 mb-2">Quantity</h3>
+                        <div class="flex items-center">
+                            <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-l-lg bg-gray-50 text-gray-600 hover:bg-gray-100">
+                                <i data-feather="minus" class="w-4 h-4"></i>
+                            </button>
+                            <div class="w-16 h-10 flex items-center justify-center border-t border-b border-gray-300">
+                                <span class="font-medium">1</span>
+                            </div>
+                            <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-r-lg bg-gray-50 text-gray-600 hover:bg-gray-100">
+                                <i data-feather="plus" class="w-4 h-4"></i>
+                            </button>
+                            <span class="ml-4 text-sm text-gray-500">Available: 2 units</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="font-medium text-gray-700 mb-2">Add-ons (Optional)</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-blue-400 cursor-pointer">
+                                <input type="checkbox" class="rounded text-blue-600">
+                                <div class="ml-3 flex-1">
+                                    <div class="flex justify-between">
+                                        <span class="font-medium">Extra Battery</span>
+                                        <span class="text-sm font-medium">+Rp 25,000/day</span>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-1">Additional battery pack for extended shooting</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-blue-400 cursor-pointer">
+                                <input type="checkbox" class="rounded text-blue-600">
+                                <div class="ml-3 flex-1">
+                                    <div class="flex justify-between">
+                                        <span class="font-medium">SD Card 64GB</span>
+                                        <span class="text-sm font-medium">+Rp 15,000/day</span>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-1">High-speed memory card for 4K recording</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-blue-400 cursor-pointer">
+                                <input type="checkbox" class="rounded text-blue-600">
+                                <div class="ml-3 flex-1">
+                                    <div class="flex justify-between">
+                                        <span class="font-medium">Tripod</span>
+                                        <span class="text-sm font-medium">+Rp 20,000/day</span>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-1">Professional tripod for stable shots</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="mb-6">
+                        <h3 class="font-medium text-gray-700 mb-2">Notes for Owner (Optional)</h3>
+                        <textarea class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-24" placeholder="Any special requests or instructions"></textarea>
+                        <p class="text-xs text-gray-500 mt-1">Max 200 characters</p>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="flex justify-between pt-6 border-t border-gray-200">
+                        <button class="px-6 py-2 text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-gray-50">
+                            Back to Item
+                        </button>
+                        <button class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 flex items-center">
+                            Continue to Your Info
+                            <i data-feather="arrow-right" class="w-4 h-4 ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Trust Badges -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div class="p-3">
+                            <i data-feather="shield" class="w-8 h-8 text-green-500 mx-auto mb-2"></i>
+                            <p class="text-sm font-medium">Secure Payment</p>
+                        </div>
+                        <div class="p-3">
+                            <i data-feather="clock" class="w-8 h-8 text-blue-500 mx-auto mb-2"></i>
+                            <p class="text-sm font-medium">24/7 Support</p>
+                        </div>
+                        <div class="p-3">
+                            <i data-feather="refresh-cw" class="w-8 h-8 text-amber-500 mx-auto mb-2"></i>
+                            <p class="text-sm font-medium">Free Cancellation</p>
+                        </div>
+                        <div class="p-3">
+                            <i data-feather="check-circle" class="w-8 h-8 text-purple-500 mx-auto mb-2"></i>
+                            <p class="text-sm font-medium">Verified Owners</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Order Summary -->
+            <div class="lg:col-span-1">
+                <div class="sticky-summary">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="p-6 border-b border-gray-200">
+                            <h2 class="text-lg font-semibold">Order Summary</h2>
+                        </div>
+                        
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center mb-4">
+                                <div class="w-16 h-16 rounded-lg bg-gray-100 overflow-hidden mr-3">
+                                    <img src="http://static.photos/technology/320x240/42" alt="Product" class="w-full h-full object-cover">
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-sm">Sony A7 III</h3>
+                                    <p class="text-xs text-gray-500">3 days rental</p>
+                                    <p class="text-sm font-medium text-blue-600 mt-1">Rp 450,000</p>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Base Price</span>
+                                    <span>Rp 450,000</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Add-ons</span>
+                                    <span>Rp 0</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Service Fee</span>
+                                    <span>Rp 45,000</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Insurance</span>
+                                    <span>Rp 22,500</span>
+                                </div>
+                                <div class="flex justify-between text-green-600">
+                                    <span>Discount</span>
+                                    <span>-Rp 0</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6">
+                            <div class="flex justify-between font-medium text-lg mb-2">
+                                <span>Subtotal</span>
+                                <span>Rp 517,500</span>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-500 mb-4">
+                                <span>Deposit (paid at pickup)</span>
+                                <span>Rp 500,000</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-xl border-t border-gray-200 pt-4">
+                                <span>Total</span>
+                                <span>Rp 1,017,500</span>
+                            </div>
+                            
+                            <!-- Mobile CTA (hidden on desktop) -->
+                            <button class="w-full mt-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 lg:hidden mobile-sticky-cta">
+                                Continue to Your Info
+                            </button>
+                            
+                            <div class="mt-6 pt-6 border-t border-gray-200">
+                                <div class="flex items-center justify-center space-x-2 text-gray-500">
+                                    <i data-feather="lock" class="w-4 h-4"></i>
+                                    <span class="text-sm">Secure SSL Encryption</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Protection Info -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 mt-4 p-6">
+                        <h3 class="font-medium mb-3">Your Rental Includes</h3>
+                        <ul class="space-y-3 text-sm">
+                            <li class="flex items-start">
+                                <i data-feather="shield" class="w-4 h-4 text-green-500 mt-0.5 mr-2"></i>
+                                <span>Damage protection up to Rp 10,000,000</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-feather="clock" class="w-4 h-4 text-blue-500 mt-0.5 mr-2"></i>
+                                <span>24/7 customer support</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-feather="dollar-sign" class="w-4 h-4 text-purple-500 mt-0.5 mr-2"></i>
+                                <span>Free cancellation up to 24 hours before rental</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        feather.replace();
+        
+        // Simple date picker initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            // This would be replaced with an actual date picker library in production
+            const dateInputs = document.querySelectorAll('input[type="text"][placeholder="Select date"]');
+            dateInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    // In a real implementation, this would show a calendar picker
+                    console.log('Show date picker for:', this);
+                });
+            });
+            
+            // Mobile menu toggle would go here
+        });
+    </script>
+</body>
+</html>
