@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    /* === Struktur & Output === */
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    /* === Module System === */
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+
+    /* === Kompatibilitas Node.js === */
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "types": ["node"],
+
+    /* === Validasi Ketat === */
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+
+    /* === Debugging === */
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    /* === Lainnya === */
+    "isolatedModules": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
