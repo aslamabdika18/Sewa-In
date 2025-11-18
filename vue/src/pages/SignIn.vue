@@ -20,6 +20,18 @@
 
       <!-- Sign In Form Card -->
       <div class="space-y-5 rounded-2xl border border-gray-100 bg-white p-5 shadow-xl">
+
+        <!-- Error Alert -->
+        <div
+          v-if="errorMessage"
+          class="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+        >
+          <svg class="mt-0.5 size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 4h.01M4.93 4.93l14.14 14.14M12 4a8 8 0 00-8 8 7.96 7.96 0 001.69 4.9M20 12a7.96 7.96 0 01-1.69 4.9" />
+          </svg>
+          <p>{{ errorMessage }}</p>
+        </div>
+
         <form @submit.prevent="handleSignIn" class="space-y-3.5">
           
           <!-- Email -->
@@ -61,7 +73,7 @@
               />
               <button
                 type="button"
-                @click="showPassword = !showPassword"
+                @click="togglePassword"
                 class="absolute inset-y-0 right-0 grid place-items-center pr-3 text-gray-400 transition hover:text-gray-600"
               >
                 <svg v-if="!showPassword" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -93,9 +105,10 @@
           <!-- Submit Button -->
           <button
             type="submit"
-            class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 px-4 py-2.5 text-sm font-bold text-white shadow-md transition hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]"
+            :disabled="isSubmitting"
+            class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 px-4 py-2.5 text-sm font-bold text-white shadow-md transition hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] disabled:opacity-60 disabled:hover:scale-100"
           >
-            <span>Masuk Sekarang</span>
+            <span>{{ isSubmitting ? 'Memproses...' : 'Masuk Sekarang' }}</span>
             <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
@@ -165,25 +178,74 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
+import type { LoginPayload } from "@/services/authApi";
+import {
+  isAxiosError,
+  type ApiErrorResponse
+} from "@/services/apiClient";
 
-const form = ref({
-  email: '',
-  password: '',
+interface SignInForm {
+  email: string;
+  password: string;
+  remember: boolean;
+}
+
+const form = ref<SignInForm>({
+  email: "",
+  password: "",
   remember: false
-})
+});
 
-const showPassword = ref(false)
+const showPassword = ref<boolean>(false);
+const errorMessage = ref<string | null>(null);
 
-const handleSignIn = () => {
-  console.log('Sign in dengan:', form.value)
+const router = useRouter();
+const route = useRoute();
+const authStore = useAuthStore();
+
+const isSubmitting = computed<boolean>(() => authStore.loading);
+
+async function handleSignIn(): Promise<void> {
+  errorMessage.value = null;
+
+  const payload: LoginPayload = {
+    email: form.value.email,
+    password: form.value.password
+    // form.remember bisa kamu pakai nanti utk "remember me" (extend cookie, dsb)
+  };
+
+  try {
+    await authStore.loginUser(payload);
+
+    // kalau sebelumnya diarahkan dari route yang butuh login
+    const redirectPath =
+      typeof route.query.redirect === "string" ? route.query.redirect : "/";
+
+    await router.push(redirectPath);
+  } catch (error: unknown) {
+    if (isAxiosError<ApiErrorResponse>(error)) {
+      errorMessage.value =
+        error.response?.data.message ?? "Login gagal. Coba lagi.";
+    } else {
+      errorMessage.value = "Terjadi kesalahan tidak dikenal.";
+    }
+  }
 }
 
-const handleGoogleLogin = () => {
-  console.log('Login dengan Google')
+function togglePassword(): void {
+  showPassword.value = !showPassword.value;
 }
 
-const handleFacebookLogin = () => {
-  console.log('Login dengan Facebook')
+function handleGoogleLogin(): void {
+  // nanti diisi logic OAuth / redirect ke backend Google auth
+  console.log("Login dengan Google");
+}
+
+function handleFacebookLogin(): void {
+  // nanti diisi logic OAuth / redirect ke backend Facebook auth
+  console.log("Login dengan Facebook");
 }
 </script>
