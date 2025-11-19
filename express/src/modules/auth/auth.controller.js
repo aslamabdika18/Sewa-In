@@ -1,6 +1,7 @@
-// src/modules/auth/auth.controller.js
 const { serialize } = require("cookie");
 const { registerUser, loginUser, COOKIE_NAME } = require("./auth.service");
+const { AppError } = require("../../middlewares/errorHandler");
+const { success, error } = require("../../utils/response");
 
 function createAuthCookie(token) {
   const isProd = process.env.NODE_ENV === "production";
@@ -14,63 +15,73 @@ function createAuthCookie(token) {
   });
 }
 
-async function registerController(req, res) {
+async function registerController(req, res, next) {
   try {
-    const { email, name, password } = req.body;
+    const { email, name, password } = req.validated;
 
     const user = await registerUser({ email, name, password });
 
-    return res.status(201).json({
-      message: "Register berhasil",
-      user
-    });
+    return success(res, user, "Registrasi berhasil", null, 201);
   } catch (error) {
-    return res.status(400).json({
-      message: error.message || "Register gagal"
-    });
+    // Email sudah terdaftar = 400
+    if (error.message.includes("Email sudah terdaftar")) {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
+    next(error);
   }
 }
 
-async function loginController(req, res) {
+async function loginController(req, res, next) {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.validated;
 
     const { token, user } = await loginUser({ email, password });
 
     res.setHeader("Set-Cookie", createAuthCookie(token));
 
-    return res.json({
-      message: "Login berhasil",
-      user
-    });
+    return success(res, user, "Login berhasil");
   } catch (error) {
-    return res.status(401).json({
-      message: error.message || "Login gagal"
-    });
+    // Email atau password salah = 401
+    if (error.message.includes("Email atau password salah")) {
+      return res.status(401).json({
+        success: false,
+        message: error.message
+      });
+    }
+    next(error);
   }
 }
 
-async function meController(req, res) {
-  return res.json({
-    user: req.user
-  });
+async function meController(req, res, next) {
+  try {
+    return success(res, { user: req.user }, "Data user berhasil diambil");
+  } catch (error) {
+    next(error);
+  }
 }
 
-function logoutController(req, res) {
-  const isProd = process.env.NODE_ENV === "production";
+function logoutController(req, res, next) {
+  try {
+    const isProd = process.env.NODE_ENV === "production";
 
-  res.setHeader(
-    "Set-Cookie",
-    serialize(COOKIE_NAME, "", {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 0
-    })
-  );
+    res.setHeader(
+      "Set-Cookie",
+      serialize(COOKIE_NAME, "", {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 0
+      })
+    );
 
-  return res.json({ message: "Logout berhasil" });
+    return success(res, null, "Logout berhasil");
+  } catch (error) {
+    next(error);
+  }
 }
 
 module.exports = {

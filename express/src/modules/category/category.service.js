@@ -1,18 +1,35 @@
 const prisma = require("../../config/database");
+const { getPagination } = require("../../utils/pagination");
 
 /**
- * Get All Categories
+ * Get All Categories dengan pagination
  */
-module.exports.getAllCategories = async () => {
+module.exports.getAllCategories = async (query = {}) => {
     try {
-        return await prisma.category.findMany({
-            include: {
-                barangs: true, // relasi yang benar sesuai schema
-            },
-            orderBy: { id: "desc" },
-        });
+        const { page, limit, skip, take, isAll } = getPagination(query);
+
+        const [items, total] = await Promise.all([
+            prisma.category.findMany({
+                skip,
+                take,
+                include: {
+                    barangs: true
+                },
+                orderBy: { id: "desc" }
+            }),
+            prisma.category.count()
+        ]);
+
+        return {
+            items,
+            pagination: isAll ? null : {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit)
+            }
+        };
     } catch (err) {
-        console.error("Service Error (getAllCategories):", err);
         throw new Error("Gagal mengambil kategori");
     }
 };
@@ -25,11 +42,10 @@ module.exports.getCategoryById = async (id) => {
         return await prisma.category.findUnique({
             where: { id: Number(id) },
             include: {
-                barangs: true,
-            },
+                barangs: true
+            }
         });
     } catch (err) {
-        console.error("Service Error (getCategoryById):", err);
         throw new Error("Gagal mengambil kategori");
     }
 };
@@ -41,11 +57,10 @@ module.exports.createCategory = async (data) => {
     try {
         return await prisma.category.create({
             data: {
-                name: data.name,
-            },
+                name: data.name
+            }
         });
     } catch (err) {
-        console.error("Service Error (createCategory):", err);
         throw new Error("Gagal membuat kategori");
     }
 };
@@ -58,11 +73,10 @@ module.exports.updateCategory = async (id, data) => {
         return await prisma.category.update({
             where: { id: Number(id) },
             data: {
-                name: data.name,
-            },
+                name: data.name
+            }
         });
     } catch (err) {
-        console.error("Service Error (updateCategory):", err);
         throw new Error("Gagal mengupdate kategori");
     }
 };
@@ -73,10 +87,9 @@ module.exports.updateCategory = async (id, data) => {
 module.exports.deleteCategory = async (id) => {
     try {
         return await prisma.category.delete({
-            where: { id: Number(id) },
+            where: { id: Number(id) }
         });
     } catch (err) {
-        console.error("Service Error (deleteCategory):", err);
         throw new Error("Gagal menghapus kategori");
     }
 };

@@ -13,59 +13,106 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  USER
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   name      String
   email     String   @unique
   phone     String?
   password  String
+  role      UserRole @default(USER)
   sewas     Sewa[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Indexes untuk frequently queried fields
+  @@index([email]) // Redundant dengan @unique tapi explicit untuk performance
+  @@index([role]) // Filter by role untuk admin operations
+  @@index([createdAt]) // Sort by created date
 }
 
 model Category {
   id      Int      @id @default(autoincrement())
   name    String
   barangs Barang[]
+
+  // Indexes
+  @@index([name]) // Search categories by name
 }
 
 model Barang {
-  id          Int      @id @default(autoincrement())
-  name        String
+  id        Int        @id @default(autoincrement())
+  name      String
   description String?
   pricePerDay Int
-  stock       Int      @default(1)
-  categoryId  Int
-  category    Category @relation(fields: [categoryId], references: [id])
-  sewas       Sewa[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  stock     Int        @default(1)
+  categoryId Int
+  category  Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  sewaItems SewaItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  // Indexes untuk frequently queried & filtered fields
+  @@index([categoryId]) // Filter by category
+  @@index([name]) // Search barang by name
+  @@index([createdAt]) // Sort by created date
+  @@index([stock]) // Filter low stock items
 }
 
 model Sewa {
   id         Int        @id @default(autoincrement())
   userId     Int
-  barangId   Int
   startDate  DateTime
   endDate    DateTime
   totalPrice Int
   status     sewaStatus @default(PENDING)
-  user       User       @relation(fields: [userId], references: [id])
-  barang     Barang     @relation(fields: [barangId], references: [id])
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items      SewaItem[]
   payment    Payment?
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
+  deletedAt  DateTime?  // Soft delete - NULL jika active, datetime jika deleted
+
+  // Indexes untuk frequently queried & filtered fields
+  @@index([userId]) // Get user's sewas
+  @@index([status]) // Filter by status (PENDING, PAID, etc)
+  @@index([deletedAt]) // Soft delete filter
+  @@index([startDate]) // Range queries pada booking dates
+  @@index([endDate]) // Range queries
+  @@index([createdAt]) // Sort by creation date
+}
+
+model SewaItem {
+  id       Int    @id @default(autoincrement())
+  sewaId   Int
+  barangId Int
+  quantity Int    @default(1)
+  sewa     Sewa   @relation(fields: [sewaId], references: [id], onDelete: Cascade)
+  barang   Barang @relation(fields: [barangId], references: [id])
+
+  // Unique constraint untuk prevent duplicate items in single booking
+  @@unique([sewaId, barangId])
+  // Indexes
+  @@index([barangId]) // Find sewas for specific barang
 }
 
 model Payment {
-  id     Int      @id @default(autoincrement())
-  sewaId Int      @unique
-  amount Int
-  method String
-  status String
-  sewa   Sewa     @relation(fields: [sewaId], references: [id])
-  paidAt DateTime @default(now())
+  id                  Int      @id @default(autoincrement())
+  sewaId              Int      @unique
+  amount              Int
+  method              String
+  status              String
+  webhookProcessedId  String?  @unique  // Untuk idempotency - track webhook yang sudah diprocess
+  sewa                Sewa     @relation(fields: [sewaId], references: [id])
+  paidAt              DateTime @default(now())
+
+  // Indexes untuk frequently queried fields
+  @@index([status]) // Filter payments by status
+  @@index([paidAt]) // Sort by payment date
 }
 
 enum sewaStatus {
@@ -74,4 +121,25 @@ enum sewaStatus {
   ONGOING
   FINISHED
   CANCELLED
+}
+
+model AuditLog {
+  id            Int       @id @default(autoincrement())
+  userId        Int       // User yang melakukan action
+  action        String    // CREATE, UPDATE, DELETE, RESTORE
+  entity        String    // Barang, Category, User, Payment
+  entityId      Int       // ID dari entity yang diubah
+  changes       String?   // JSON string of changes {before: {}, after: {}}
+  details       String?   // Additional context/notes
+  ipAddress     String?   // IP address of requester
+  correlationId String?   // Correlation ID untuk request tracking
+  createdAt     DateTime  @default(now())
+
+  // Indexes untuk audit queries
+  @@index([userId]) // Find audits by admin
+  @@index([action]) // Filter by action type
+  @@index([entity]) // Filter by entity type
+  @@index([entityId]) // Find all audits for specific entity
+  @@index([createdAt]) // Sort by date
+  @@index([correlationId]) // Link to request logs
 }

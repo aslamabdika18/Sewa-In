@@ -27,21 +27,19 @@ async function registerUser({ email, name, password }) {
     data: {
       email,
       name,
-      // ⚠️ SESUAIKAN dengan nama field di schema.prisma
-      // Kalau field kamu bernama "password", pakai ini:
-      password: passwordHash
-      // Kalau field kamu bernama "passwordHash", ganti jadi:
-      // passwordHash: passwordHash
+      password: passwordHash,
+      role: 'USER'  // Default role untuk user baru
     },
     select: {
       id: true,
       email: true,
-      name: true
+      name: true,
+      role: true
     }
   });
 
   // kembalikan data user tanpa password
-  return user; // { id, email, name }
+  return user; // { id, email, name, role }
 }
 
 async function loginUser({ email, password }) {
@@ -81,7 +79,8 @@ async function loginUser({ email, password }) {
   const payload = {
     id: user.id,
     email: user.email,
-    name: user.name
+    name: user.name,
+    role: user.role  // Include role dalam JWT payload
   };
 
   const token = jwt.sign(payload, process.env.JWT_SECRET, {

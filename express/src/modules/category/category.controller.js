@@ -1,65 +1,47 @@
 const categoryService = require("./category.service");
+const { success } = require("../../utils/response");
 
-module.exports.getAll = async (req, res) => {
+module.exports.getAll = async (req, res, next) => {
     try {
-        const data = await categoryService.getAllCategories();
-        res.json({
-            status: true,
-            message: "Berhasil mengambil data kategori",
-            data,
-        });
+        const { items, pagination } = await categoryService.getAllCategories(req.query);
+        return success(res, items, "Berhasil mengambil data kategori", pagination);
     } catch (err) {
-        res.status(500).json({ status: false, message: err.message });
+        next(err);
     }
 };
 
-module.exports.getById = async (req, res) => {
+module.exports.getById = async (req, res, next) => {
     try {
         const data = await categoryService.getCategoryById(req.params.id);
-        res.json({
-            status: true,
-            message: "Berhasil mengambil kategori",
-            data,
-        });
+        return success(res, data, "Berhasil mengambil detail kategori");
     } catch (err) {
-        res.status(500).json({ status: false, message: err.message });
+        next(err);
     }
 };
 
-module.exports.create = async (req, res) => {
+module.exports.create = async (req, res, next) => {
     try {
-        const data = await categoryService.createCategory(req.body);
-        res.json({
-            status: true,
-            message: "Kategori berhasil dibuat",
-            data,
-        });
+        const data = await categoryService.createCategory(req.validated);
+        return success(res, data, "Kategori berhasil dibuat", null, 201);
     } catch (err) {
-        res.status(500).json({ status: false, message: err.message });
+        next(err);
     }
 };
 
-module.exports.update = async (req, res) => {
+module.exports.update = async (req, res, next) => {
     try {
-        const data = await categoryService.updateCategory(req.params.id, req.body);
-        res.json({
-            status: true,
-            message: "Kategori berhasil diupdate",
-            data,
-        });
+        const data = await categoryService.updateCategory(req.params.id, req.validated);
+        return success(res, data, "Kategori berhasil diupdate");
     } catch (err) {
-        res.status(500).json({ status: false, message: err.message });
+        next(err);
     }
 };
 
-module.exports.delete = async (req, res) => {
+module.exports.delete = async (req, res, next) => {
     try {
         await categoryService.deleteCategory(req.params.id);
-        res.json({
-            status: true,
-            message: "Kategori berhasil dihapus",
-        });
+        return success(res, null, "Kategori berhasil dihapus");
     } catch (err) {
-        res.status(500).json({ status: false, message: err.message });
+        next(err);
     }
 };

@@ -18,7 +18,15 @@
     "prisma:studio": "prisma studio",
     "start:prod": "pm2 start src/server.js --name sewa-in-api",
     "stop:prod": "pm2 stop sewa-in-api",
-    "restart:prod": "pm2 restart sewa-in-api"
+    "restart:prod": "pm2 restart sewa-in-api",
+    "test": "jest --forceExit --detectOpenHandles",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage --forceExit",
+    "test:integration": "jest --testPathPattern=routes --forceExit",
+    "test:unit": "jest --testPathPattern=modules --forceExit",
+    "gen:docs": "node scripts/generate-swagger.js",
+    "setup:admin": "node scripts/createAdminUser.js",
+    "validate:env": "node scripts/validateEnv.js"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
@@ -27,11 +35,21 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "midtrans-client": "^1.4.3"
+    "midtrans-client": "^1.4.3",
+    "nodemailer": "^7.0.10",
+    "pino": "^8.17.2",
+    "pino-pretty": "^10.3.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^3.1.11",
-    "prisma": "^6.19.0"
+    "prisma": "^6.19.0",
+    "supertest": "^6.3.3"
   }
 }
