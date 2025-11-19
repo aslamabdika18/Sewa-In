@@ -2,7 +2,7 @@
 
 ## Project Structure
 
-\`\`\`markdown
+```markdown
 src/
  ├── App.vue
  ├── main.ts
@@ -32,8 +32,9 @@ src/
  │     └── routes.ts
  ├── services/
  │     └── api.ts
- └── stores/
-\`\`\`
+ ├── stores/
+ └── types/
+```
 
 ## Dependencies
 
@@ -59,6 +60,6 @@ src/
 
 ## Available Scripts
 
-- \`npm run dev\` - Start development server
-- \`npm run build\` - Build for production
-- \`npm run preview\` - Preview production build
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build

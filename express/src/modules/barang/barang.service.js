@@ -1,114 +1,105 @@
-const prisma = require("../../config/database");
-const { getPagination } = require("../../utils/pagination");
+// src/modules/barang/barang.service.js
+const { prisma } = require('../../database')
+const { getPagination } = require('../../utils/pagination')
 
 /**
- * Get All Barang with Pagination
+ * Ambil list barang dari DB.
+ * Support:
+ * - search (by name)
+ * - filter categoryId
+ * - pagination
+ * TIDAK ada N+1 karena pakai include + Promise.all
  */
-module.exports.getAllBarang = async (query) => {
-    try {
-        const { take, skip, isAll, page, limit } = getPagination(query);
+exports.getAllBarang = async (query) => {
+    const { page, limit, skip, take, isAll } = getPagination(query)
 
-        const [data, total] = await Promise.all([
-            prisma.barang.findMany({
-                skip,
-                take,
-                include: {
-                    category: {
-                        select: { id: true, name: true },
-                    },
-                },
-                orderBy: { createdAt: "desc" },
-            }),
-            prisma.barang.count(),
-        ]);
+    const where = {}
 
-        return {
-            status: true,
-            message: "Berhasil mendapatkan data barang",
-            data,
-            pagination: isAll
-                ? null
-                : {
-                      total,
-                      page,
-                      limit,
-                      totalPages: Math.ceil(total / limit),
-                  },
-        };
-    } catch (err) {
-        console.error("Service Error (getAllBarang):", err);
-        throw new Error("Gagal mengambil data barang");
+    if (query.search) {
+        where.name = {
+            contains: query.search,
+            mode: 'insensitive',
+        }
     }
-};
 
-/**
- * Get Barang by ID
- */
-module.exports.getBarangById = async (id) => {
-    try {
-        return await prisma.barang.findUnique({
-            where: { id: Number(id) },
+    if (query.categoryId) {
+        where.categoryId = Number(query.categoryId)
+    }
+
+    // 2 query paralel: list + total
+    const [items, total] = await Promise.all([
+        prisma.barang.findMany({
+            where,
+            skip,
+            take,
+            orderBy: { createdAt: 'desc' },
             include: {
-                category: true,
+                category: true, // <--- ini yang menghindari N+1
             },
-        });
-    } catch (err) {
-        console.error("Service Error (getBarangById):", err);
-        throw new Error("Gagal mengambil data barang");
+        }),
+        prisma.barang.count({ where }),
+    ])
+
+    return {
+        items,
+        pagination: isAll
+            ? null
+            : {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+            },
     }
-};
+}
 
 /**
- * Create Barang
+ * Ambil 1 barang by ID (sekalian kategori).
  */
-module.exports.createBarang = async (data) => {
-    try {
-        return await prisma.barang.create({
-            data: {
-                name: data.name,
-                description: data.description, // sesuai schema
-                pricePerDay: Number(data.pricePerDay),
-                stock: Number(data.stock),
-                categoryId: Number(data.categoryId),
-            },
-        });
-    } catch (err) {
-        console.error("Service Error (createBarang):", err);
-        throw new Error("Gagal membuat barang");
-    }
-};
+exports.getBarangById = async (id) => {
+    return prisma.barang.findUnique({
+        where: { id: Number(id) },
+        include: { category: true },
+    })
+}
 
 /**
- * Update Barang
+ * Buat barang baru.
  */
-module.exports.updateBarang = async (id, data) => {
-    try {
-        return await prisma.barang.update({
-            where: { id: Number(id) },
-            data: {
-                name: data.name,
-                description: data.description,
-                pricePerDay: Number(data.pricePerDay),
-                stock: Number(data.stock),
-                categoryId: Number(data.categoryId),
-            },
-        });
-    } catch (err) {
-        console.error("Service Error (updateBarang):", err);
-        throw new Error("Gagal mengupdate barang");
-    }
-};
+exports.createBarang = async (payload) => {
+    return prisma.barang.create({
+        data: {
+            name: payload.name,
+            description: payload.description || null,
+            pricePerDay: payload.pricePerDay,
+            stock: payload.stock,
+            categoryId: payload.categoryId,
+        },
+    })
+}
 
 /**
- * Delete Barang
+ * Update barang.
  */
-module.exports.deleteBarang = async (id) => {
-    try {
-        return await prisma.barang.delete({
-            where: { id: Number(id) },
-        });
-    } catch (err) {
-        console.error("Service Error (deleteBarang):", err);
-        throw new Error("Gagal menghapus barang");
-    }
-};
+exports.updateBarang = async (id, payload) => {
+    return prisma.barang.update({
+        where: { id: Number(id) },
+        data: {
+            name: payload.name,
+            description:
+                payload.description === undefined ? undefined : payload.description,
+            pricePerDay: payload.pricePerDay,
+            stock: payload.stock,
+            categoryId: payload.categoryId,
+        },
+    })
+}
+
+/**
+ * Hapus barang.
+ */
+exports.deleteBarang = async (id) => {
+    return prisma.barang.delete({
+        where: { id: Number(id) },
+    })
+}

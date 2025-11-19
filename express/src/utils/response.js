@@ -1,14 +1,35 @@
-module.exports.success = (res, data, message = `success`, statusCode = 200) => {
-    return res.status(statusCode).json({
-        status: true,
+// src/utils/response.js
+
+/**
+ * Response sukses standard:
+ * {
+ *   success: true,
+ *   message: string,
+ *   data: ...,
+ *   pagination: { ... } | null
+ * }
+ */
+exports.success = (res, data, message = 'OK', pagination = null, status = 200) => {
+    return res.status(status).json({
+        success: true,
         message,
         data,
-    });
-};
+        pagination,
+    })
+}
 
-module.exports.error = (res, message = `internal server error`, statusCode = 500) => {
-    return res.status(statusCode).json({
-        status: false,
+/**
+ * Response error standard:
+ * {
+ *   success: false,
+ *   message: string,
+ *   data: null
+ * }
+ */
+exports.error = (res, message = 'Terjadi kesalahan', status = 400, data = null) => {
+    return res.status(status).json({
+        success: false,
         message,
-    });
+        data,
+    })
 }

@@ -2,7 +2,7 @@
 
 ## Project Structure
 
-\`\`\`markdown
+```markdown
 src/
  ├── app.js
  ├── server.js
@@ -11,6 +11,10 @@ src/
  │     ├── env.js
  │     └── midtrans.js
  ├── modules/
+ │     ├── auth/
+ │     │     ├── auth.controller.js
+ │     │     ├── auth.route.js
+ │     │     └── auth.service.js
  │     ├── barang/
  │     │     ├── barang.controller.js
  │     │     ├── barang.route.js
@@ -32,12 +36,13 @@ src/
  │     │     ├── user.route.js
  │     │     └── user.service.js
  ├── middlewares/
+ │     └── auth.js
  ├── routes/
  │     └── index.js
  └── utils/
        ├── pagination.js
        └── response.js
-\`\`\`
+```
 
 ## Dependencies
 
@@ -57,11 +62,14 @@ src/
 
 ## Available Scripts
 
-- \`npm run dev\` - Start development server
-- \`npm start\` - Start production server
-- \`npm run prisma:generate\` - Generate Prisma client
-- \`npm run prisma:push\` - Push schema to database
-- \`npm run prisma:migrate\` - Create database migration
-- \`npm run prisma:studio\` - Open Prisma Studio
-- \`npm run format\` - Format code with Prettier
-- \`npm run lint\` - Run ESLint
+- `npm run dev` - Start development server
+- `npm start` - Start production server
+- `npm run prisma:generate` - Generate Prisma client
+- `npm run prisma:push` - Push schema to database
+- `npm run prisma:migrate` - Create database migration
+- `npm run prisma:studio` - Open Prisma Studio
+- `npm run format` - Format code with Prettier
+- `npm run lint` - Run ESLint
+- `npm run start:prod` - Start production with PM2
+- `npm run stop:prod` - Stop production with PM2
+- `npm run restart:prod` - Restart production with PM2

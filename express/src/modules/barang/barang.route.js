@@ -1,12 +1,14 @@
-const express = require("express");
-const controller = require("./barang.controller");
+// src/modules/barang/barang.route.js
+const express = require('express')
+const router = express.Router()
+const barangController = require('./barang.controller')
+// const auth = require('../../middlewares/auth') // kalau sudah ada
 
-const router = express.Router();
+// Kalau mau pakai auth, tinggal ganti jadi: router.get('/', auth, barangController.getAllBarang)
+router.get('/', barangController.getAllBarang)
+router.get('/:id', barangController.getBarangById)
+router.post('/', barangController.createBarang)
+router.put('/:id', barangController.updateBarang)
+router.delete('/:id', barangController.deleteBarang)
 
-router.get("/", controller.getAll);
-router.get("/:id", controller.getById);
-router.post("/", controller.create);
-router.put("/:id", controller.update);
-router.delete("/:id", controller.remove);
-
-module.exports = router;
+module.exports = router
