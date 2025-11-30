@@ -3,37 +3,57 @@
 ## Project Structure
 
 ```markdown
-src/
- ├── App.vue
- ├── main.ts
- ├── env.d.ts
- ├── style.css
- ├── assets/
- ├── components/
- │     ├── Footer.vue
- │     ├── Navbar.vue
- │     └── catalog/
- │           ├── MobileFilterDrawer.vue
- │           ├── Pagination.vue
- │           ├── ProductCard.vue
- │           └── ProductListItem.vue
- ├── config/
- ├── directives/
- │     └── reveal.ts
- ├── pages/
- │     ├── AboutUs.vue
- │     ├── Home.vue
- │     ├── NotFound.vue
- │     ├── SignIn.vue
- │     ├── SignUp.vue
- │     └── Tools.vue
- ├── routers/
- │     ├── index.ts
- │     └── routes.ts
- ├── services/
- │     └── api.ts
- ├── stores/
- └── types/
+vue/
+ ├── src/
+ │     ├── App.vue
+ │     ├── main.ts
+ │     ├── env.d.ts
+ │     ├── style.css
+ │     ├── assets/
+ │     ├── components/
+ │     │     ├── Footer.vue
+ │     │     ├── Navbar.vue
+ │     │     ├── catalog/
+ │     │     │     ├── MobileFilterDrawer.vue
+ │     │     │     ├── Pagination.vue
+ │     │     │     ├── ProductCard.vue
+ │     │     │     └── ProductListItem.vue
+ │     │     └── checkout/
+ │     ├── directives/
+ │     │     └── reveal.ts
+ │     ├── pages/
+ │     │     ├── AboutUs.vue
+ │     │     ├── BarangDetail.vue
+ │     │     ├── BarangList.vue
+ │     │     ├── Checkout.vue
+ │     │     ├── Home.vue
+ │     │     ├── NotFound.vue
+ │     │     ├── SignIn.vue
+ │     │     ├── SignUp.vue
+ │     │     └── Tools.vue
+ │     ├── routers/
+ │     │     ├── index.ts
+ │     │     └── routes.ts
+ │     ├── services/
+ │     │     ├── apiClient.ts
+ │     │     └── authApi.ts
+ │     ├── stores/
+ │     │     ├── auth.ts
+ │     │     ├── barang.ts
+ │     │     └── category.ts
+ │     ├── types/
+ │     │     └── routes.d.ts
+ │     └── api/
+ │           ├── apiBarang.ts
+ │           └── apiCategory.ts
+ ├── public/
+ ├── index.html
+ ├── package.json
+ ├── vite.config.ts
+ ├── tsconfig.json
+ ├── tsconfig.app.json
+ ├── tsconfig.node.json
+ └── README.md
 ```
 
 ## Dependencies

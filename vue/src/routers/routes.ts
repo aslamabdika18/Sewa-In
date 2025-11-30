@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from "vue-router";
 
 const routes: RouteRecordRaw[] = [
+  // 🌿 Public pages (default layout)
   {
     path: "/",
     name: "home",
@@ -20,15 +21,86 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: "/barang",
+    name: "BarangList",
+    component: () => import("@/pages/BarangList.vue"),
+    meta: {
+      title: "Katalog Barang",
+      layout: "default"
+    }
+  },
+  {
+    path: "/barang/:id",
+    name: "BarangDetail",
+    component: () => import("@/pages/BarangDetail.vue"),
+    meta: {
+      title: "Detail Barang",
+      layout: "default"
+    }
+  },
+
+  // 🔧 Contoh halaman yang butuh login tapi tetap layout default
+  {
     path: "/tools",
     name: "tools",
     component: () => import("@/pages/Tools.vue"),
     meta: {
       title: "Peralatan",
       layout: "default",
-      requiresAuth: true, // 👈 contoh route yang butuh login
+      requiresAuth: true
     }
   },
+
+  // 🔐 ADMIN AREA (layout: admin, role: ADMIN)
+  {
+    path: "/admin",
+    name: "AdminDashboard",
+    component: () => import("@/pages/AdminDashboard.vue"),
+    meta: {
+      title: "Admin Dashboard",
+      layout: "admin",
+      requiresAuth: true,
+      role: "ADMIN"
+    }
+  },
+  {
+    path: "/admin/orders",
+    name: "AdminOrders",
+    // TODO: nanti ganti ke AdminOrdersPage.vue kalau sudah ada
+    component: () => import("@/pages/AdminDashboard.vue"),
+    meta: {
+      title: "Pesanan",
+      layout: "admin",
+      requiresAuth: true,
+      role: "ADMIN"
+    }
+  },
+  {
+    path: "/admin/barang",
+    name: "AdminBarang",
+    // TODO: nanti ganti ke AdminBarangPage.vue kalau sudah ada
+    component: () => import("@/pages/AdminDashboard.vue"),
+    meta: {
+      title: "Katalog Barang (Admin)",
+      layout: "admin",
+      requiresAuth: true,
+      role: "ADMIN"
+    }
+  },
+  {
+    path: "/admin/customers",
+    name: "AdminCustomers",
+    // TODO: nanti ganti ke AdminCustomersPage.vue kalau sudah ada
+    component: () => import("@/pages/AdminDashboard.vue"),
+    meta: {
+      title: "Customer",
+      layout: "admin",
+      requiresAuth: true,
+      role: "ADMIN"
+    }
+  },
+
+  // 🔑 Auth pages (layout: auth, guestOnly)
   {
     path: "/sign-in",
     name: "sign-in",
@@ -36,7 +108,7 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: "Masuk",
       layout: "auth",
-      guestOnly: true // 👈 jangan boleh masuk kalau sudah login
+      guestOnly: true
     }
   },
   {
@@ -49,6 +121,8 @@ const routes: RouteRecordRaw[] = [
       guestOnly: true
     }
   },
+
+  // 404
   {
     path: "/:pathMatch(.*)*",
     name: "not-found",

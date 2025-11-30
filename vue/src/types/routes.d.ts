@@ -11,8 +11,9 @@ declare module "vue-router" {
      * Jenis layout yang dipakai route ini
      * - "default" → ada navbar & footer
      * - "auth" → halaman auth (tanpa navbar/footer)
+     * - "admin" → layout admin (sidebar + topbar)
      */
-    layout?: "default" | "auth";
+    layout?: "default" | "auth" | "admin";
 
     /**
      * Kalau true → user wajib login
@@ -24,5 +25,12 @@ declare module "vue-router" {
      * contoh: sign-in, sign-up
      */
     guestOnly?: boolean;
+
+    /**
+     * Role yang diizinkan (sinkron dengan enum UserRole di backend)
+     * - "ADMIN"
+     * - "USER"
+     */
+    role?: "ADMIN" | "USER";
   }
 }

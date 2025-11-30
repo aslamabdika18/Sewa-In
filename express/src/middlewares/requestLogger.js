@@ -37,22 +37,33 @@ module.exports = (req, res, next) => {
   const userId = req.user?.id || null;
 
   // Log incoming request
-  logRequest(req.method, req.path, userId, req.ip, correlationId, req.query, req.body);
+  logRequest(req.method, req.originalUrl, userId, req.ip, correlationId, req.query, req.body);
 
   // Simpan original res.json untuk intercept response
   const originalJson = res.json;
   const originalSend = res.send;
 
-  // Override res.json untuk log response
-  res.json = function (data) {
+  // Flag untuk mencegah logging ganda
+  let hasLogged = false;
+
+  // Fungsi helper untuk log response (hanya sekali)
+  const logResponseOnce = function (data) {
+    if (hasLogged) return;
+    hasLogged = true;
+
     // Hitung durasi request
     const duration = Date.now() - startTime;
     
-    // Estimate response size (rough calculation)
-    const responseSize = JSON.stringify(data).length;
+    // Estimate response size
+    const responseSize = typeof data === 'string' ? data.length : JSON.stringify(data).length;
 
     // Log response dengan correlation ID
-    logResponse(req.method, req.path, res.statusCode, duration, userId, correlationId, responseSize);
+    logResponse(req.method, req.originalUrl, res.statusCode, duration, userId, correlationId, responseSize);
+  };
+
+  // Override res.json untuk log response
+  res.json = function (data) {
+    logResponseOnce(data);
 
     // Panggil original res.json
     return originalJson.call(this, data);
@@ -60,14 +71,7 @@ module.exports = (req, res, next) => {
 
   // Also override send for non-JSON responses
   res.send = function (data) {
-    // Hitung durasi request
-    const duration = Date.now() - startTime;
-    
-    // Estimate response size
-    const responseSize = typeof data === 'string' ? data.length : Buffer.byteLength(data);
-
-    // Log response
-    logResponse(req.method, req.path, res.statusCode, duration, userId, correlationId, responseSize);
+    logResponseOnce(data);
 
     // Panggil original res.send
     return originalSend.call(this, data);
@@ -82,7 +86,7 @@ module.exports = (req, res, next) => {
       logError(err, {
         correlationId,
         method: req.method,
-        path: req.path,
+        path: req.originalUrl,
         userId: userId || 'anonymous',
         duration,
       });

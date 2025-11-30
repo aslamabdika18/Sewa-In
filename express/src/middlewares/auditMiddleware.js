@@ -6,7 +6,7 @@
  */
 
 const { auditLog } = require('../utils/auditLog');
-const { logger } = require('../config/logger');
+const logger = require('../config/logger');
 
 /**
  * Audit middleware for tracking admin operations

@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -26,6 +20,7 @@ model User {
   password  String
   role      UserRole @default(USER)
   sewas     Sewa[]
+  reviews   Review[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -45,16 +40,19 @@ model Category {
 }
 
 model Barang {
-  id        Int        @id @default(autoincrement())
-  name      String
+  id          Int        @id @default(autoincrement())
+  name        String
   description String?
   pricePerDay Int
-  stock     Int        @default(1)
-  categoryId Int
-  category  Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  sewaItems SewaItem[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  stock       Int        @default(1)
+  categoryId  Int
+  images      Json?      // Store: { thumbnail: "url", medium: "url", large: "url" }
+  imageId     String?    // Reference to image ID for deletion
+  category    Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  sewaItems   SewaItem[]
+  reviews     Review[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   // Indexes untuk frequently queried & filtered fields
   @@index([categoryId]) // Filter by category
@@ -73,9 +71,10 @@ model Sewa {
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   items      SewaItem[]
   payment    Payment?
+  review     Review?
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  deletedAt  DateTime?  // Soft delete - NULL jika active, datetime jika deleted
+  deletedAt  DateTime? // Soft delete - NULL jika active, datetime jika deleted
 
   // Indexes untuk frequently queried & filtered fields
   @@index([userId]) // Get user's sewas
@@ -101,14 +100,14 @@ model SewaItem {
 }
 
 model Payment {
-  id                  Int      @id @default(autoincrement())
-  sewaId              Int      @unique
-  amount              Int
-  method              String
-  status              String
-  webhookProcessedId  String?  @unique  // Untuk idempotency - track webhook yang sudah diprocess
-  sewa                Sewa     @relation(fields: [sewaId], references: [id])
-  paidAt              DateTime @default(now())
+  id                 Int      @id @default(autoincrement())
+  sewaId             Int      @unique
+  amount             Int
+  method             String
+  status             String
+  webhookProcessedId String?  @unique // Untuk idempotency - track webhook yang sudah diprocess
+  sewa               Sewa     @relation(fields: [sewaId], references: [id])
+  paidAt             DateTime @default(now())
 
   // Indexes untuk frequently queried fields
   @@index([status]) // Filter payments by status
@@ -124,16 +123,16 @@ enum sewaStatus {
 }
 
 model AuditLog {
-  id            Int       @id @default(autoincrement())
-  userId        Int       // User yang melakukan action
-  action        String    // CREATE, UPDATE, DELETE, RESTORE
-  entity        String    // Barang, Category, User, Payment
-  entityId      Int       // ID dari entity yang diubah
-  changes       String?   // JSON string of changes {before: {}, after: {}}
-  details       String?   // Additional context/notes
-  ipAddress     String?   // IP address of requester
-  correlationId String?   // Correlation ID untuk request tracking
-  createdAt     DateTime  @default(now())
+  id            Int      @id @default(autoincrement())
+  userId        Int // User yang melakukan action
+  action        String // CREATE, UPDATE, DELETE, RESTORE
+  entity        String // Barang, Category, User, Payment
+  entityId      Int // ID dari entity yang diubah
+  changes       String? // JSON string of changes {before: {}, after: {}}
+  details       String? // Additional context/notes
+  ipAddress     String? // IP address of requester
+  correlationId String? // Correlation ID untuk request tracking
+  createdAt     DateTime @default(now())
 
   // Indexes untuk audit queries
   @@index([userId]) // Find audits by admin
@@ -142,4 +141,24 @@ model AuditLog {
   @@index([entityId]) // Find all audits for specific entity
   @@index([createdAt]) // Sort by date
   @@index([correlationId]) // Link to request logs
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  barangId  Int
+  sewaId    Int      @unique // One review per rental
+  rating    Int      @db.TinyInt // 1-5
+  comment   String?  @db.Text
+  status    String   @default("PUBLISHED") // PUBLISHED, HIDDEN, DELETED
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  barang    Barang   @relation(fields: [barangId], references: [id], onDelete: Cascade)
+  sewa      Sewa     @relation(fields: [sewaId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, sewaId])
+  @@index([barangId])
+  @@index([rating])
+  @@index([createdAt])
 }

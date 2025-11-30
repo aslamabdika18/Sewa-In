@@ -10,6 +10,39 @@
 
 const prisma = require("../../config/database");
 const midtransClient = require('midtrans-client');
+const crypto = require('crypto');
+
+/**
+ * VERIFY WEBHOOK SIGNATURE
+ * 
+ * Midtrans mengirim signature untuk verifikasi authenticity webhook
+ * Signature = MD5(order_id + status_code + gross_amount + server_key)
+ * 
+ * @param {Object} notification - Webhook notification dari Midtrans
+ * @param {string} signature - Signature dari Midtrans header
+ * @returns {boolean} True jika signature valid
+ */
+function verifyWebhookSignature(notification, signature) {
+  // Midtrans signature verification
+  // Signature = MD5(order_id + status_code + gross_amount + server_key)
+  
+  const orderId = notification.order_id;
+  const statusCode = notification.status_code || notification.transaction_status;
+  const grossAmount = notification.gross_amount;
+  const serverKey = process.env.MIDTRANS_SERVER_KEY;
+
+  // Build the signature input
+  const signatureInput = `${orderId}${statusCode}${grossAmount}${serverKey}`;
+  
+  // Generate hash
+  const expectedSignature = crypto
+    .createHash('md5')
+    .update(signatureInput)
+    .digest('hex');
+
+  // Compare signatures
+  return expectedSignature === signature;
+}
 
 /**
  * Initialize Midtrans Snap client
@@ -43,6 +76,8 @@ function getCorClient() {
  * @param {number} sewaId - ID dari sewa record
  * @returns {Promise<Object>} Snap token dan redirect URL
  */
+module.exports.verifyWebhookSignature = verifyWebhookSignature;
+
 module.exports.createSnapTransaction = async (sewaId) => {
   const sewa = await prisma.sewa.findUnique({
     where: { id: sewaId },

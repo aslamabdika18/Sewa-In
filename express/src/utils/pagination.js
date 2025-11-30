@@ -10,7 +10,7 @@ function getPagination(query = {}) {
     page,
     limit,
     isAll,
-    skip: isAll ? undefined : (page - 1) * limit,
+    skip: isAll ? 0 : (page - 1) * limit,
     take: isAll ? undefined : limit,
   };
 }

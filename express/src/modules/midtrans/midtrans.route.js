@@ -1,10 +1,10 @@
 /**
  * Midtrans Payment Routes
- * 
+ *
  * Routes untuk payment flow:
  * - POST /api/v1/payments/snap - Create Snap transaction (auth required)
  * - GET /api/v1/payments/snap/status/:orderId - Check status (auth required)
- * - POST /api/v1/payments/webhook - Webhook handler (NO auth - from Midtrans)
+ * - POST /api/v1/payments/webhook - Webhook handler (NO auth - dari Midtrans)
  */
 
 const express = require("express");
@@ -35,7 +35,6 @@ const { paymentLimiter, webhookLimiter } = require("../../middlewares/rateLimite
  *               sewaId:
  *                 type: integer
  *                 example: 42
- *                 description: ID booking yang akan dibayar
  *     responses:
  *       201:
  *         description: Payment transaction created successfully
@@ -55,18 +54,13 @@ const { paymentLimiter, webhookLimiter } = require("../../middlewares/rateLimite
  *                   properties:
  *                     token:
  *                       type: string
- *                       description: Midtrans Snap token untuk redirect ke payment page
  *                     redirectUrl:
  *                       type: string
  *                       format: url
- *                       description: URL untuk redirect ke Midtrans payment page
  *                     orderId:
  *                       type: string
- *                       description: Order ID di Midtrans
  *                     paymentId:
  *                       type: integer
- *                       description: Payment ID di database
- *     responses:
  *       400:
  *         description: Booking tidak ditemukan atau sudah dibayar
  *       401:
@@ -134,7 +128,7 @@ router.get("/snap/status/:orderId", auth, paymentLimiter, controller.checkStatus
  * /payments/webhook:
  *   post:
  *     summary: Midtrans webhook handler
- *     description: Webhook endpoint untuk Midtrans notification. Dipanggil otomatis oleh Midtrans ketika ada status update pembayaran. JANGAN tambah auth di endpoint ini.
+ *     description: Webhook endpoint untuk Midtrans notification. Dipanggil otomatis oleh Midtrans ketika ada status update pembayaran. JANGAN pakai auth di endpoint ini.
  *     tags:
  *       - Payment
  *     requestBody:
@@ -173,7 +167,7 @@ router.get("/snap/status/:orderId", auth, paymentLimiter, controller.checkStatus
  *       400:
  *         description: Invalid webhook data
  *       429:
- *         description: Rate limit exceeded for webhook (100/minute per IP)
+ *         description: Rate limit exceeded (100/minute per IP)
  */
 router.post("/webhook", webhookLimiter, express.json(), controller.handleWebhook);
 

@@ -23,13 +23,13 @@
 
                         <div class="flex flex-col sm:flex-row gap-4 mb-12 animate-slide-up"
                             style="animation-delay: 0.2s">
-                            <a href="#equipment"
+                            <router-link to="/#equipment"
                                 class="group px-8 py-4 bg-white text-emerald-700 font-bold rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 text-center flex items-center justify-center">
                                 Jelajahi Peralatan
                                 <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                 </svg>
-                            </a>
+                            </router-link>
                             <a href="#how"
                                 class="px-8 py-4 glass-effect text-white font-bold rounded-xl hover:bg-white hover:text-emerald-700 transition-all duration-300 text-center flex items-center justify-center">
                                 <svg class="mr-2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -71,7 +71,7 @@
                         <div class="relative rounded-3xl overflow-hidden shadow-2xl">
                             <img src="https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?w=800&h=600&fit=crop"
                                 alt="Adventure Equipment" class="w-full h-auto">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                            <div class="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
                         </div>
 
                         <div class="absolute -left-6 top-20 glass-effect text-white p-4 rounded-xl shadow-xl animate-float"
@@ -114,8 +114,11 @@
             </div>
         </section>
 
+        <!-- Catalog Section -->
+        <Catalog />
+
         <!-- Stats Section -->
-        <section class="py-16 bg-gradient-to-b from-gray-50 to-white">
+        <section class="py-16 bg-linear-to-b from-gray-50 to-white">
             <div class="container mx-auto px-4 sm:px-6">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                     <div v-for="(stat, index) in stats" :key="index" class="text-center reveal"
@@ -149,7 +152,7 @@
                         class="reveal bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl hover:-translate-y-3 transition-all duration-300"
                         :style="{ transitionDelay: `${index * 0.1}s` }">
                         <div
-                            :class="['w-16 h-16 bg-gradient-to-br rounded-2xl flex items-center justify-center mb-6 transform', item.gradient, item.rotation]">
+                            :class="['w-16 h-16 bg-linear-to-br rounded-2xl flex items-center justify-center mb-6 transform', item.gradient, item.rotation]">
                             <svg class="text-white w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path v-if="item.iconType === 'heart'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                 <path v-else-if="item.iconType === 'bolt'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -172,7 +175,7 @@
         </section>
 
         <!-- Equipment Showcase -->
-        <section id="equipment" class="py-24 bg-gradient-to-b from-gray-50 to-white">
+        <section id="equipment" class="py-24 bg-linear-to-b from-gray-50 to-white">
             <div class="container mx-auto px-4 sm:px-6">
                 <div class="text-center mb-12 reveal">
                     <h2 class="text-4xl md:text-5xl font-black mb-6">
@@ -188,7 +191,7 @@
                         :class="[
                             'px-6 py-3 rounded-full font-semibold text-sm transition-all duration-300',
                             activeCategory === category.id
-                                ? 'bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-lg scale-105'
+                                ? 'bg-linear-to-r from-emerald-600 to-emerald-700 text-white shadow-lg scale-105'
                                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         ]">
                         {{ category.icon }} {{ category.label }}
@@ -201,7 +204,7 @@
                         :style="{ transitionDelay: `${index * 0.1}s` }">
                         <div class="relative overflow-hidden">
                             <div
-                                class="w-full h-56 bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center">
+                                class="w-full h-56 bg-linear-to-br from-emerald-100 to-emerald-200 flex items-center justify-center">
                                 <svg class="w-20 h-20 text-emerald-600 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                 </svg>
@@ -238,7 +241,7 @@
 
                 <div class="text-center mt-12 reveal">
                     <a href="#"
-                        class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-bold rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300">
+                        class="inline-flex items-center px-8 py-4 bg-linear-to-r from-emerald-600 to-emerald-700 text-white font-bold rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300">
                         Lihat Semua Peralatan
                         <svg class="ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -262,14 +265,14 @@
 
                 <div class="relative">
                     <div
-                        class="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-emerald-600 to-emerald-700 transform -translate-y-1/2 z-0">
+                        class="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-linear-to-r from-emerald-500 via-emerald-600 to-emerald-700 transform -translate-y-1/2 z-0">
                     </div>
 
                     <div class="grid md:grid-cols-3 gap-8 relative z-10">
                         <div v-for="(step, index) in steps" :key="index" class="reveal text-center"
                             :style="{ transitionDelay: `${index * 0.1}s` }">
                             <div
-                                :class="['w-24 h-24 bg-gradient-to-br rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl hover:scale-110 transition-transform duration-300', step.gradient]">
+                                :class="['w-24 h-24 bg-linear-to-br rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl hover:scale-110 transition-transform duration-300', step.gradient]">
                                 <svg class="text-white w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path v-if="step.iconType === 'search'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     <path v-else-if="step.iconType === 'calendar'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -288,7 +291,7 @@
         </section>
 
         <!-- Community Stories -->
-        <section id="story" class="py-24 bg-gradient-to-b from-gray-50 to-white">
+        <section id="story" class="py-24 bg-linear-to-b from-gray-50 to-white">
             <div class="container mx-auto px-4 sm:px-6">
                 <div class="text-center mb-16 reveal">
                     <div
@@ -309,7 +312,7 @@
                         :style="{ transitionDelay: `${index * 0.1}s` }">
                         <div class="flex items-center mb-6">
                             <div
-                                class="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-2xl font-bold border-4 border-emerald-100">
+                                class="w-16 h-16 rounded-full bg-linear-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-2xl font-bold border-4 border-emerald-100">
                                 {{ testimonial.name[0] }}
                             </div>
                             <div class="ml-4">
@@ -331,7 +334,7 @@
 
         <!-- CTA Section -->
         <section
-            class="py-24 bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-900 relative overflow-hidden">
+            class="py-24 bg-linear-to-br from-emerald-600 via-emerald-700 to-emerald-900 relative overflow-hidden">
             <div class="absolute inset-0 opacity-10">
                 <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
                 <div class="absolute bottom-0 right-0 w-96 h-96 bg-orange-500 rounded-full blur-3xl"></div>
@@ -357,13 +360,13 @@
 
                     <div class="flex flex-col sm:flex-row justify-center gap-4 animate-slide-up"
                         style="animation-delay: 0.2s">
-                        <a href="#"
+                        <router-link to="/barang"
                             class="group px-10 py-5 bg-white text-emerald-700 font-bold rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 text-center flex items-center justify-center">
                             Mulai Sekarang
                             <svg class="ml-2 w-6 h-6 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                             </svg>
-                        </a>
+                        </router-link>
                         <a href="#"
                             class="px-10 py-5 glass-effect text-white font-bold rounded-xl hover:bg-white hover:text-emerald-700 transition-all duration-300 text-center flex items-center justify-center">
                             <svg class="mr-2 w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -400,6 +403,7 @@
 <script setup lang="ts">
 
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import Catalog from '@/components/catalog/Catalog.vue'
 
 // Types
 interface Stat {

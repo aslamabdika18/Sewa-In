@@ -92,110 +92,108 @@ const errorLogger = isDevelopment
 /**
  * Log utility functions
  */
-module.exports = {
-  // Main logger
-  logger,
 
-  // Log request with correlation ID
-  logRequest: (method, path, userId, ip, correlationId, query, body) => {
-    const requestData = {
-      type: 'REQUEST',
-      correlationId,
-      method,
-      path,
-      userId: userId || 'anonymous',
-      ip,
-      ...(query && Object.keys(query).length > 0 && { query }),
-      ...(body && Object.keys(body).length > 0 && { bodyKeys: Object.keys(body) }), // Log keys only, not sensitive values
-    };
+// Log request with correlation ID
+logger.logRequest = (method, path, userId, ip, correlationId, query, body) => {
+  const requestData = {
+    type: 'REQUEST',
+    correlationId,
+    method,
+    path,
+    userId: userId || 'anonymous',
+    ip,
+    ...(query && Object.keys(query).length > 0 && { query }),
+    ...(body && Object.keys(body).length > 0 && { bodyKeys: Object.keys(body) }), // Log keys only, not sensitive values
+  };
 
-    logger.info(requestData, `${method} ${path}`);
+  logger.info(requestData, `${method} ${path}`);
 
-    if (fileLogger) {
-      fileLogger.info(requestData, `${method} ${path}`);
-    }
-  },
-
-  // Log response with correlation ID and performance metrics
-  logResponse: (method, path, statusCode, duration, userId, correlationId, responseSize = 0) => {
-    const level = statusCode >= 400 ? 'warn' : 'info';
-    const isSlowQuery = duration > 1000; // Flag queries slower than 1 second
-    
-    const responseData = {
-      type: 'RESPONSE',
-      correlationId,
-      method,
-      path,
-      statusCode,
-      duration,
-      durationMs: `${duration}ms`,
-      userId: userId || 'anonymous',
-      ...(responseSize > 0 && { responseSize }), // Size in bytes
-      ...(isSlowQuery && { slowQuery: true }), // Flag slow queries
-      ...(statusCode >= 500 && { error: true }), // Flag server errors
-    };
-
-    logger[level](responseData, `${method} ${path} - ${statusCode} (${duration}ms)`);
-
-    if (fileLogger) {
-      fileLogger[level](responseData, `${method} ${path} - ${statusCode} (${duration}ms)`);
-    }
-  },
-
-  // Log error with correlation ID and context
-  logError: (error, context = {}) => {
-    const errorData = {
-      type: 'ERROR',
-      message: error.message,
-      stack: error.stack,
-      statusCode: error.statusCode || 500,
-      correlationId: context.correlationId || 'unknown',
-      ...context,
-    };
-
-    logger.error(errorData, error.message);
-
-    if (errorLogger) {
-      errorLogger.error(errorData, error.message);
-    }
-  },
-
-  // Log authentication with correlation ID
-  logAuth: (action, userId, success, message = '', correlationId = 'unknown') => {
-    const level = success ? 'info' : 'warn';
-    const authData = {
-      type: 'AUTH',
-      action,
-      correlationId,
-      userId,
-      success,
-      message: message || undefined,
-    };
-
-    logger[level](authData, `Auth ${action}: ${success ? 'SUCCESS' : 'FAILED'} ${message}`);
-
-    if (fileLogger) {
-      fileLogger[level](authData, `Auth ${action}: ${success ? 'SUCCESS' : 'FAILED'} ${message}`);
-    }
-  },
-
-  // Log payment with correlation ID and transaction tracking
-  logPayment: (action, sewaId, amount, status, message = '', correlationId = 'unknown') => {
-    const paymentData = {
-      type: 'PAYMENT',
-      action,
-      correlationId,
-      sewaId,
-      amount,
-      status,
-      message: message || undefined,
-      timestamp: new Date().toISOString(),
-    };
-
-    logger.info(paymentData, `Payment ${action}: Sewa #${sewaId} - ${status} ${message}`);
-
-    if (fileLogger) {
-      fileLogger.info(paymentData, `Payment ${action}: Sewa #${sewaId} - ${status} ${message}`);
-    }
-  },
+  if (fileLogger) {
+    fileLogger.info(requestData, `${method} ${path}`);
+  }
 };
+
+// Log response with correlation ID and performance metrics
+logger.logResponse = (method, path, statusCode, duration, userId, correlationId, responseSize = 0) => {
+  const level = statusCode >= 400 ? 'warn' : 'info';
+  const isSlowQuery = duration > 1000; // Flag queries slower than 1 second
+  
+  const responseData = {
+    type: 'RESPONSE',
+    correlationId,
+    method,
+    path,
+    statusCode,
+    duration,
+    durationMs: `${duration}ms`,
+    userId: userId || 'anonymous',
+    ...(responseSize > 0 && { responseSize }), // Size in bytes
+    ...(isSlowQuery && { slowQuery: true }), // Flag slow queries
+    ...(statusCode >= 500 && { error: true }), // Flag server errors
+  };
+
+  logger[level](responseData, `${method} ${path} - ${statusCode} (${duration}ms)`);
+
+  if (fileLogger) {
+    fileLogger[level](responseData, `${method} ${path} - ${statusCode} (${duration}ms)`);
+  }
+};
+
+// Log error with correlation ID and context
+logger.logError = (error, context = {}) => {
+  const errorData = {
+    type: 'ERROR',
+    message: error.message,
+    stack: error.stack,
+    statusCode: error.statusCode || 500,
+    correlationId: context.correlationId || 'unknown',
+    ...context,
+  };
+
+  logger.error(errorData, error.message);
+
+  if (errorLogger) {
+    errorLogger.error(errorData, error.message);
+  }
+};
+
+// Log authentication with correlation ID
+logger.logAuth = (action, userId, success, message = '', correlationId = 'unknown') => {
+  const level = success ? 'info' : 'warn';
+  const authData = {
+    type: 'AUTH',
+    action,
+    correlationId,
+    userId,
+    success,
+    message: message || undefined,
+  };
+
+  logger[level](authData, `Auth ${action}: ${success ? 'SUCCESS' : 'FAILED'} ${message}`);
+
+  if (fileLogger) {
+    fileLogger[level](authData, `Auth ${action}: ${success ? 'SUCCESS' : 'FAILED'} ${message}`);
+  }
+};
+
+// Log payment with correlation ID and transaction tracking
+logger.logPayment = (action, sewaId, amount, status, message = '', correlationId = 'unknown') => {
+  const paymentData = {
+    type: 'PAYMENT',
+    action,
+    correlationId,
+    sewaId,
+    amount,
+    status,
+    message: message || undefined,
+    timestamp: new Date().toISOString(),
+  };
+
+  logger.info(paymentData, `Payment ${action}: Sewa #${sewaId} - ${status} ${message}`);
+
+  if (fileLogger) {
+    fileLogger.info(paymentData, `Payment ${action}: Sewa #${sewaId} - ${status} ${message}`);
+  }
+};
+
+module.exports = logger;

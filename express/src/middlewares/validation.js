@@ -55,7 +55,7 @@ function validateBody(schema) {
       req.validated = validated;
       next();
     } catch (error) {
-      if (error instanceof ZodError) {
+      if (error instanceof ZodError && error.errors) {
         // Format Zod errors jadi user-friendly
         const formattedErrors = error.errors.reduce((acc, err) => {
           const path = err.path.join('.');
@@ -90,7 +90,7 @@ function validateQuery(schema) {
       req.validated = { ...req.validated, ...validated };
       next();
     } catch (error) {
-      if (error instanceof ZodError) {
+      if (error instanceof ZodError && error.errors) {
         const formattedErrors = error.errors.reduce((acc, err) => {
           const path = err.path.join('.');
           acc[path] = err.message;
@@ -122,7 +122,7 @@ function validateParams(schema) {
       req.validated = { ...req.validated, ...validated };
       next();
     } catch (error) {
-      if (error instanceof ZodError) {
+      if (error instanceof ZodError && error.errors) {
         const formattedErrors = error.errors.reduce((acc, err) => {
           const path = err.path.join('.');
           acc[path] = err.message;

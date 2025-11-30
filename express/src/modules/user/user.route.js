@@ -1,7 +1,7 @@
 const express = require("express");
 const controller = require("./user.controller");
 const auth = require("../../middlewares/auth");
-const checkRole = require("../../middlewares/checkRole");
+const { checkRole } = require("../../middlewares/checkRole");
 const { validateBody } = require("../../middlewares/validation");
 const { userUpdateSchema, changePasswordSchema } = require("../../validations/schemas");
 

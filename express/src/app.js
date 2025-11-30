@@ -6,6 +6,11 @@ const requestLogger = require("./middlewares/requestLogger");
 const { globalLimiter } = require("./middlewares/rateLimiter");
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
+const helmet = require('helmet');
+
+/**
+ * INISIALISASI EXPRESS APP
+ */
 
 const app = express();
 
@@ -38,6 +43,23 @@ app.use(express.urlencoded({ extended: true }));
 app.use(globalLimiter);
 
 /**
+ * SECURITY HEADERS - Menggunakan Helmet
+ * Melindungi dari beberapa kerentanan web umum
+ */
+
+app.use(helmet());
+
+/**
+ * REQUEST TIMEOUT - Prevent hanging requests
+ * Set timeout 30 seconds untuk semua requests
+ */
+app.use((req, res, next) => {
+  req.setTimeout(30000); // 30 seconds
+  res.setTimeout(30000); // 30 seconds
+  next();
+});
+
+/**
  * REQUEST LOGGER - Catat semua request/response
  * Untuk debugging, monitoring, dan audit trail
  */
@@ -52,6 +74,34 @@ app.use("/api/v1", routes);
 // Swagger UI - dokumentasi API interaktif
 // Akses: /api-docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+/**
+ * HEALTH CHECK ENDPOINTS - Untuk monitoring dan readiness checks
+ * /health - Server status
+ * /ready - Database connectivity check
+ * /alive - Simple liveness probe
+ */
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+app.get('/ready', (req, res) => {
+  // Simple readiness check - dapat diperluas untuk check database connectivity
+  res.json({
+    status: 'READY',
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.get('/alive', (req, res) => {
+  res.json({ alive: true });
+});
+
 /**
  * ERROR HANDLER - HARUS PALING AKHIR
  * Menangani semua error dari routes di atas

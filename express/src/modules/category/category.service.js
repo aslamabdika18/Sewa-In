@@ -8,15 +8,22 @@ module.exports.getAllCategories = async (query = {}) => {
     try {
         const { page, limit, skip, take, isAll } = getPagination(query);
 
+        // Build findMany options
+        const findOptions = {
+            include: {
+                barangs: true
+            },
+            orderBy: { id: "desc" }
+        };
+
+        // Add pagination only if not "all"
+        if (!isAll) {
+            findOptions.skip = skip;
+            findOptions.take = take;
+        }
+
         const [items, total] = await Promise.all([
-            prisma.category.findMany({
-                skip,
-                take,
-                include: {
-                    barangs: true
-                },
-                orderBy: { id: "desc" }
-            }),
+            prisma.category.findMany(findOptions),
             prisma.category.count()
         ]);
 

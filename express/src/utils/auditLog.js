@@ -6,7 +6,7 @@
  */
 
 const { prisma } = require('../config/database');
-const { logger } = require('../config/logger');
+const logger = require('../config/logger');
 
 /**
  * Log an audit event

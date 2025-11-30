@@ -57,7 +57,8 @@ async function loginController(req, res, next) {
 
 async function meController(req, res, next) {
   try {
-    return success(res, { user: req.user }, "Data user berhasil diambil");
+    // ✅ FIXED: Return user directly, not wrapped in { user: ... }
+    return success(res, req.user, "Data user berhasil diambil");
   } catch (error) {
     next(error);
   }

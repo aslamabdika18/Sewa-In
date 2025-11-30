@@ -8,9 +8,9 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middlewares/auth');
-const checkRole = require('../middlewares/checkRole');
+const { checkRole } = require('../middlewares/checkRole');
 const auditService = require('../utils/auditLog');
-const { logger } = require('../config/logger');
+const logger = require('../config/logger');
 
 /**
  * @swagger

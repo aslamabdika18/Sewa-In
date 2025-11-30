@@ -3,45 +3,90 @@
 ## Project Structure
 
 ```markdown
-src/
- ├── app.js
- ├── server.js
- ├── config/
- │     ├── database.js
- │     ├── env.js
- │     └── midtrans.js
- ├── modules/
- │     ├── auth/
- │     │     ├── auth.controller.js
- │     │     ├── auth.route.js
- │     │     └── auth.service.js
- │     ├── barang/
- │     │     ├── barang.controller.js
- │     │     ├── barang.route.js
- │     │     └── barang.service.js
- │     ├── category/
- │     │     ├── category.controller.js
- │     │     ├── category.route.js
- │     │     └── category.service.js
- │     ├── midtrans/
- │     │     ├── midtrans.controller.js
- │     │     ├── midtrans.route.js
- │     │     └── midtrans.service.js
- │     ├── sewa/
- │     │     ├── sewa.controller.js
- │     │     ├── sewa.route.js
- │     │     └── sewa.service.js
- │     ├── user/
- │     │     ├── user.controller.js
- │     │     ├── user.route.js
- │     │     └── user.service.js
- ├── middlewares/
- │     └── auth.js
- ├── routes/
- │     └── index.js
- └── utils/
-       ├── pagination.js
-       └── response.js
+express/
+ ├── src/
+ │     ├── app.js
+ │     ├── server.js
+ │     ├── config/
+ │     │     ├── database.js
+ │     │     ├── email.js
+ │     │     ├── env.js
+ │     │     ├── envValidation.js
+ │     │     ├── logger.js
+ │     │     ├── midtrans.js
+ │     │     └── swagger.js
+ │     ├── middlewares/
+ │     │     ├── auditMiddleware.js
+ │     │     ├── auth.js
+ │     │     ├── checkRole.js
+ │     │     ├── emailNotification.js
+ │     │     ├── errorHandler.js
+ │     │     ├── inputSanitization.js
+ │     │     ├── rateLimiter.js
+ │     │     ├── requestLogger.js
+ │     │     ├── securityHeaders.js
+ │     │     └── validation.js
+ │     ├── modules/
+ │     │     ├── auth/
+ │     │     │     ├── auth.controller.js
+ │     │     │     ├── auth.route.js
+ │     │     │     └── auth.service.js
+ │     │     ├── barang/
+ │     │     │     ├── barang.controller.js
+ │     │     │     ├── barang.route.js
+ │     │     │     └── barang.service.js
+ │     │     ├── category/
+ │     │     │     ├── category.controller.js
+ │     │     │     ├── category.route.js
+ │     │     │     └── category.service.js
+ │     │     ├── midtrans/
+ │     │     │     ├── midtrans.controller.js
+ │     │     │     ├── midtrans.route.js
+ │     │     │     └── midtrans.service.js
+ │     │     ├── sewa/
+ │     │     │     ├── sewa.controller.js
+ │     │     │     ├── sewa.route.js
+ │     │     │     └── sewa.service.js
+ │     │     └── user/
+ │     │           ├── user.controller.js
+ │     │           ├── user.route.js
+ │     │           └── user.service.js
+ │     ├── routes/
+ │     │     ├── admin.route.js
+ │     │     └── index.js
+ │     ├── services/
+ │     │     ├── email.service.js
+ │     │     └── notification.service.js
+ │     ├── utils/
+ │     │     ├── auditLog.js
+ │     │     ├── correlationId.js
+ │     │     ├── errors.js
+ │     │     ├── logAnalysis.js
+ │     │     ├── pagination.js
+ │     │     ├── response.js
+ │     │     ├── softDelete.js
+ │     │     └── validation.js
+ │     └── validations/
+ │           └── schemas.js
+ ├── prisma/
+ │     ├── schema.prisma
+ │     └── migrations/
+ ├── scripts/
+ │     ├── createAdminUser.js
+ │     ├── generate-swagger.js
+ │     ├── scheduleReminders.js
+ │     ├── seedDatabase.js
+ │     ├── testRaceCondition.js
+ │     └── validateEnv.js
+ ├── __tests__/
+ │     ├── race-condition.test.js
+ │     ├── setup.js
+ │     ├── modules/
+ │     └── routes/
+ ├── jest.config.js
+ ├── package.json
+ ├── prisma.config.js
+ └── README.md
 ```
 
 ## Dependencies

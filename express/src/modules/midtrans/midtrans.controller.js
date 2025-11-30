@@ -91,6 +91,7 @@ module.exports.handleWebhook = async (req, res, next) => {
   
   try {
     const notification = req.body;
+    const signature = req.headers['x-callback-token'] || req.body.signature_key;
 
     // Log incoming webhook
     console.log('📝 Webhook received:', {
@@ -103,9 +104,23 @@ module.exports.handleWebhook = async (req, res, next) => {
     // Validate notification dari Midtrans
     if (!notification.order_id) {
       console.warn('⚠️  Invalid webhook - missing order_id');
-      return res.status(200).json({
+      return res.status(400).json({
         success: false,
         message: 'Invalid notification format'
+      });
+    }
+
+    // VERIFY WEBHOOK SIGNATURE
+    // This ensures the webhook actually came from Midtrans
+    if (!midtransService.verifyWebhookSignature(notification, signature)) {
+      console.warn('⚠️  Invalid webhook signature - possible tampering:', {
+        orderId: notification.order_id,
+        transactionId: notification.transaction_id,
+        receivedSignature: signature
+      });
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid webhook signature'
       });
     }
 

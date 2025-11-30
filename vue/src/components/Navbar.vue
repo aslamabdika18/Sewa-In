@@ -402,6 +402,15 @@ watch(
   }
 );
 
+// ✅ ADDED: Watch user changes to ensure navbar updates when login/logout
+watch(
+  () => authStore.user,
+  () => {
+    // Force reactivity when user logs in or out
+    userMenuOpen.value = false;
+  }
+);
+
 // Prevent body scroll when mobile menu is open
 watch(mobileMenuOpen, (isOpen: boolean) => {
   if (isOpen) {

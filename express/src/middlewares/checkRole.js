@@ -33,4 +33,4 @@ function checkRole(requiredRoles) {
   };
 }
 
-module.exports = checkRole;
+module.exports = { checkRole };

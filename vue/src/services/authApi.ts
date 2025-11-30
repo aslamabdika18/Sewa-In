@@ -4,6 +4,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  role: "ADMIN" | "USER";
 }
 
 export interface RegisterPayload {
@@ -43,8 +44,11 @@ export async function login(
 }
 
 export async function fetchMe(): Promise<User> {
-  const response = await apiClient.get<{ user: User }>("/auth/me");
-  return response.data.user;
+  const response = await apiClient.get<{ data: User }>("/auth/me");
+  // ✅ FIXED: Handle response format correctly
+  // Backend now returns { statusCode, message, data: user }
+  // where data is the user object directly
+  return response.data.data;
 }
 
 export async function logout(): Promise<void> {

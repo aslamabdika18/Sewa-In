@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const categoryController = require("./category.controller");
 const auth = require("../../middlewares/auth");
-const checkRole = require("../../middlewares/checkRole");
+const { checkRole } = require("../../middlewares/checkRole");
 const { validateBody } = require("../../middlewares/validation");
 const { categoryCreateSchema, categoryUpdateSchema } = require("../../validations/schemas");
 

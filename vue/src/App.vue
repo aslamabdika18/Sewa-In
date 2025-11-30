@@ -1,27 +1,28 @@
 <template>
-  <div class="min-h-screen">
-    <!-- Navbar - Muncul HANYA jika layout = 'default' -->
-    <Navbar v-if="showNavbarFooter" />
-
-    <!-- Konten halaman - TAMBAHKAN padding-top -->
-    <main :class="showNavbarFooter ? 'pt-20' : ''">
-      <RouterView />
-    </main>
-
-    <!-- Footer - Muncul HANYA jika layout = 'default' -->
-    <Footer v-if="showNavbarFooter" />
-  </div>
+  <component :is="layoutComponent">
+    <RouterView />
+  </component>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import Navbar from '@/components/Navbar.vue'
-import Footer from '@/components/Footer.vue'
+import { computed } from "vue";
+import { useRoute } from "vue-router";
 
-const route = useRoute()
+// Layouts
+import DefaultLayout from "@/layouts/DefaultLayout.vue";
+import AuthLayout from "@/layouts/AuthLayout.vue";
+import AdminLayout from "@/layouts/AdminLayout.vue";
 
-const showNavbarFooter = computed(() => {
-  return route.meta.layout !== 'auth'
-})
+const route = useRoute();
+
+// Tentukan layout berdasarkan meta.layout
+const layoutComponent = computed(() => {
+  const layout = route.meta.layout;
+
+  if (layout === "auth") return AuthLayout;
+  if (layout === "admin") return AdminLayout;
+
+  // default layout = layout publik
+  return DefaultLayout;
+});
 </script>

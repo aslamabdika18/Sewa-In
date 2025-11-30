@@ -2,17 +2,18 @@ const express = require('express')
 const router = express.Router()
 const barangController = require('./barang.controller')
 const auth = require('../../middlewares/auth')
-const checkRole = require('../../middlewares/checkRole')
+const { checkRole } = require('../../middlewares/checkRole')
 const { validateBody } = require('../../middlewares/validation')
 const { auditMiddleware } = require('../../middlewares/auditMiddleware')
 const { barangCreateSchema, barangUpdateSchema } = require('../../validations/schemas')
+const { upload } = require('../../middlewares/fileUpload')
 
 /**
  * @swagger
  * /barang:
  *   get:
  *     summary: Get semua barang (items)
- *     description: Menampilkan daftar semua barang yang tersedia dengan pagination dan filter
+ *     description: Menampilkan daftar semua barang yang tersedia dengan pagination, filter, dan sorting
  *     tags:
  *       - Barang (Items)
  *     parameters:
@@ -27,7 +28,7 @@ const { barangCreateSchema, barangUpdateSchema } = require('../../validations/sc
  *         schema:
  *           type: integer
  *           example: 10
- *         description: Jumlah item per halaman (default 10)
+ *         description: Jumlah item per halaman (default 10, max 100)
  *       - in: query
  *         name: categoryId
  *         schema:
@@ -38,6 +39,22 @@ const { barangCreateSchema, barangUpdateSchema } = require('../../validations/sc
  *         schema:
  *           type: string
  *         description: Search by name or description
+ *       - in: query
+ *         name: priceMin
+ *         schema:
+ *           type: integer
+ *         description: Minimum price per day
+ *       - in: query
+ *         name: priceMax
+ *         schema:
+ *           type: integer
+ *         description: Maximum price per day
+ *       - in: query
+ *         name: sort
+ *         schema:
+ *           type: string
+ *           enum: [newest, oldest, price-low, price-high]
+ *         description: Sort order (default newest)
  *     responses:
  *       200:
  *         description: List barang berhasil diambil
@@ -76,7 +93,7 @@ router.get('/', barangController.getAllBarang)
  * /barang/{id}:
  *   get:
  *     summary: Get barang by ID
- *     description: Menampilkan detail barang berdasarkan ID
+ *     description: Menampilkan detail barang berdasarkan ID dengan reviews terbaru
  *     tags:
  *       - Barang (Items)
  *     parameters:
@@ -112,7 +129,7 @@ router.get('/:id', barangController.getBarangById)
  * /barang:
  *   post:
  *     summary: Create barang baru (Admin only)
- *     description: Membuat item barang baru. Hanya admin yang dapat mengakses.
+ *     description: Membuat item barang baru dengan optional image. Hanya admin yang dapat mengakses.
  *     tags:
  *       - Barang (Items)
  *     security:
@@ -120,14 +137,14 @@ router.get('/:id', barangController.getBarangById)
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
  *               - name
  *               - categoryId
  *               - description
- *               - price
+ *               - pricePerDay
  *               - stock
  *             properties:
  *               name:
@@ -141,7 +158,7 @@ router.get('/:id', barangController.getBarangById)
  *               description:
  *                 type: string
  *                 example: Laptop gaming dengan spesifikasi tinggi
- *               price:
+ *               pricePerDay:
  *                 type: number
  *                 format: float
  *                 example: 150000
@@ -152,8 +169,8 @@ router.get('/:id', barangController.getBarangById)
  *                 description: Jumlah barang yang tersedia
  *               image:
  *                 type: string
- *                 format: url
- *                 description: URL gambar barang (opsional)
+ *                 format: binary
+ *                 description: Foto barang (JPEG, PNG, WebP, max 5MB)
  *     responses:
  *       201:
  *         description: Barang berhasil dibuat
@@ -177,14 +194,14 @@ router.get('/:id', barangController.getBarangById)
  *       400:
  *         description: Validation error
  */
-router.post('/', auth, checkRole('ADMIN'), validateBody(barangCreateSchema), auditMiddleware('Barang', 'CREATE'), barangController.createBarang)
+router.post('/', auth, checkRole('ADMIN'), upload.single('image'), validateBody(barangCreateSchema), auditMiddleware('Barang', 'CREATE'), barangController.createBarang)
 
 /**
  * @swagger
  * /barang/{id}:
  *   put:
  *     summary: Update barang (Admin only)
- *     description: Update informasi barang. Hanya admin yang dapat mengakses.
+ *     description: Update informasi barang dan/atau gambar. Hanya admin yang dapat mengakses.
  *     tags:
  *       - Barang (Items)
  *     security:
@@ -199,7 +216,7 @@ router.post('/', auth, checkRole('ADMIN'), validateBody(barangCreateSchema), aud
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -209,12 +226,13 @@ router.post('/', auth, checkRole('ADMIN'), validateBody(barangCreateSchema), aud
  *                 type: integer
  *               description:
  *                 type: string
- *               price:
+ *               pricePerDay:
  *                 type: number
  *               stock:
  *                 type: integer
  *               image:
  *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
  *         description: Barang berhasil diupdate
@@ -235,14 +253,14 @@ router.post('/', auth, checkRole('ADMIN'), validateBody(barangCreateSchema), aud
  *       403:
  *         description: Admin access required
  */
-router.put('/:id', auth, checkRole('ADMIN'), validateBody(barangUpdateSchema), auditMiddleware('Barang', 'UPDATE'), barangController.updateBarang)
+router.put('/:id', auth, checkRole('ADMIN'), upload.single('image'), validateBody(barangUpdateSchema), auditMiddleware('Barang', 'UPDATE'), barangController.updateBarang)
 
 /**
  * @swagger
  * /barang/{id}:
  *   delete:
  *     summary: Delete barang (Admin only)
- *     description: Menghapus barang (soft delete). Hanya admin yang dapat mengakses.
+ *     description: Menghapus barang beserta file gambarnya. Hanya admin yang dapat mengakses.
  *     tags:
  *       - Barang (Items)
  *     security:
@@ -255,7 +273,7 @@ router.put('/:id', auth, checkRole('ADMIN'), validateBody(barangUpdateSchema), a
  *           type: integer
  *         description: ID barang
  *     responses:
- *       204:
+ *       200:
  *         description: Barang berhasil dihapus
  *       404:
  *         description: Barang tidak ditemukan
